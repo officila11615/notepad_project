@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { NoteList } from './note-list';
 import { NoteEditor } from './note-editor';
@@ -17,18 +18,29 @@ import { FilePlus, BookText } from 'lucide-react';
 import { getSummary } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 
-export function NoteFlowApp() {
+interface NoteFlowAppProps {
+  initialNoteId: string;
+}
+
+export function NoteFlowApp({ initialNoteId }: NoteFlowAppProps) {
   const { notes, isLoaded, addNote, updateNote, deleteNote } = useNotes();
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(initialNoteId);
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
-    if (isLoaded && notes.length === 0) {
-      const newNoteId = addNote();
-      setSelectedNoteId(newNoteId);
+    if (initialNoteId) {
+      setSelectedNoteId(initialNoteId);
     }
-  }, [isLoaded, notes, addNote]);
+  }, [initialNoteId]);
+
+  useEffect(() => {
+    if (selectedNoteId && selectedNoteId !== initialNoteId) {
+      router.push(`/notes/${selectedNoteId}`);
+    }
+  }, [selectedNoteId, initialNoteId, router]);
+
 
   const handleAddNote = () => {
     const newNoteId = addNote();
@@ -42,7 +54,8 @@ export function NoteFlowApp() {
       const newNotes = notes.filter(n => n.id !== id);
       if (newNotes.length > 0) {
         // select the previous note or the first one
-        setSelectedNoteId(newNotes[Math.max(0, index - 1)].id);
+        const newSelectedId = newNotes[Math.max(0, index - 1)].id;
+        setSelectedNoteId(newSelectedId);
       } else {
         setSelectedNoteId(null);
         // create a new one if all are deleted
@@ -71,12 +84,8 @@ export function NoteFlowApp() {
   }, [notes, searchTerm]);
   
   const selectedNote = useMemo(() => {
-    if (isLoaded && !selectedNoteId && filteredNotes.length > 0) {
-      setSelectedNoteId(filteredNotes[0].id);
-      return filteredNotes[0];
-    }
     return notes.find(note => note.id === selectedNoteId) ?? null;
-  }, [selectedNoteId, notes, isLoaded, filteredNotes]);
+  }, [selectedNoteId, notes]);
 
   return (
     <SidebarProvider>
