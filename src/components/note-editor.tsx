@@ -19,10 +19,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Sparkles, Loader2, NotebookPen } from 'lucide-react';
+import { Trash2, Sparkles, Loader2, NotebookPen, ArrowLeft } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
+import Link from 'next/link';
 
 interface NoteEditorProps {
   note: Note | null;
@@ -94,7 +95,13 @@ export function NoteEditor({ note, onUpdate, onDelete, onSummarize }: NoteEditor
       <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
         <NotebookPen className="w-16 h-16 mb-4 text-primary/50" />
         <h2 className="text-xl font-medium">Select a note to view or edit</h2>
-        <p className="text-sm">Or create a new one to get started.</p>
+        <p className="text-sm mb-6">Or create a new one to get started.</p>
+        <Button asChild variant="outline" className="glow-sm hover:glow-md transition-all">
+          <Link href="/">
+             <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+        </Button>
       </div>
     );
   }
