@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef, useTransition } from 'react';
@@ -24,6 +25,8 @@ import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 
 interface NoteEditorProps {
   note: Note | null;
@@ -40,6 +43,7 @@ export function NoteEditor({ note, onUpdate, onDelete, onSummarize }: NoteEditor
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const { toast } = useToast();
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (note) {
@@ -93,23 +97,20 @@ export function NoteEditor({ note, onUpdate, onDelete, onSummarize }: NoteEditor
   if (!note) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-        <NotebookPen className="w-16 h-16 mb-4 text-primary/50" />
-        <h2 className="text-xl font-medium">Select a note to view or edit</h2>
-        <p className="text-sm mb-6">Or create a new one to get started.</p>
-        <Button asChild variant="outline" className="glow-sm hover:glow-md transition-all">
-          <Link href="/">
-             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Link>
-        </Button>
+        <Loader2 className="w-16 h-16 mb-4 text-primary/50 animate-spin" />
+        <h2 className="text-xl font-medium">Loading note...</h2>
       </div>
     );
   }
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-card/50">
         <header className="flex items-center justify-between p-4 border-b border-border/50">
+          <Button variant="outline" size="sm" onClick={() => router.push('/notes')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Notes
+          </Button>
           <div className="text-sm text-muted-foreground">
             Last updated: {formatDate(note.updatedAt)}
           </div>
