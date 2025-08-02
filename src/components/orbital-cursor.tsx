@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 export function OrbitalCursor() {
   const [isMounted, setIsMounted] = useState(false);
   const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -16,18 +15,6 @@ export function OrbitalCursor() {
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       if (!isVisible) setIsVisible(true);
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('a, button, [role="button"]')) {
-        setIsHovering(true);
-      }
-    };
-    
-    const handleMouseOut = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).closest('a, button, [role="button"]')) {
-        setIsHovering(false);
-      }
     };
     
     const handleMouseLeave = () => {
@@ -39,15 +26,11 @@ export function OrbitalCursor() {
     }
 
     window.addEventListener('mousemove', handleMouseMove);
-    document.body.addEventListener('mouseover', handleMouseOver);
-    document.body.addEventListener('mouseout', handleMouseOut);
     document.documentElement.addEventListener('mouseleave', handleMouseLeave);
     document.documentElement.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      document.body.removeEventListener('mouseover', handleMouseOver);
-      document.body.removeEventListener('mouseout', handleMouseOut);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       document.documentElement.removeEventListener('mouseenter', handleMouseEnter);
     };
@@ -61,7 +44,6 @@ export function OrbitalCursor() {
     <div
       className={cn(
         'cursor-container',
-        isHovering && 'hovering',
         !isVisible && 'hidden'
       )}
       style={{
