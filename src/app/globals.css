@@ -205,14 +205,15 @@ body {
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
-  transition: transform 0.2s ease-out, opacity 0.2s ease-out, background-color 0.2s ease-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out, background-color 0.2s, width 0.3s ease-in-out, height 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transform-origin: center center;
 }
 
 .cursor-dot {
   width: 8px;
   height: 8px;
   background-color: hsl(var(--accent));
-  transform-origin: center center;
+  box-shadow: 0 0 10px hsl(var(--accent)), 0 0 20px hsl(var(--accent)), 0 0 30px hsl(var(--accent));
   margin-left: -4px;
   margin-top: -4px;
 }
@@ -220,35 +221,27 @@ body {
 .cursor-aura {
   width: 44px;
   height: 44px;
-  background-color: hsla(var(--accent), 0.2);
-  border: 1px solid hsl(var(--accent));
-  transform-origin: center center;
+  background-color: transparent;
+  border: 1px solid hsla(var(--accent), 0.5);
   margin-left: -22px;
   margin-top: -22px;
 }
 
 .cursor-dot.hovering {
   transform: scale(1.5);
+  box-shadow: 0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary)), 0 0 45px hsl(var(--primary));
   background-color: hsl(var(--primary));
 }
 
 .cursor-aura.hovering {
   width: 60px;
   height: 60px;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 10px hsla(var(--primary), 0.3);
   margin-left: -30px;
   margin-top: -30px;
-  background-color: hsla(var(--primary), 0.3);
-  border-color: hsl(var(--primary));
-}
-
-.cursor-dot.idle, .cursor-aura.idle {
-    opacity: 0.5;
-    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s, background-color 1s, width 1s, height 1s;
 }
 
 .hidden {
-    opacity: 0;
+  opacity: 0;
 }
-    
-
-    
