@@ -9,9 +9,8 @@ import { useParams, useRouter } from 'next/navigation';
 export default function NotePage() {
   const { notes, updateNote, deleteNote, isLoaded } = useNotes();
   const router = useRouter();
-  const params = useParams();
-  
-  const noteId = params.noteId as string;
+  const { noteId } = useParams<{ noteId: string }>();
+
   const note = isLoaded ? notes.find(n => n.id === noteId) : undefined;
 
   const handleUpdateNote = (id: string, title: string, content: string, imageUrl?: string | null, videoUrl?: string | null) => {
