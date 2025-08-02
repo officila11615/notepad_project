@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getSummary } from '@/app/actions';
 import { useAppState } from '@/context/app-state-context';
 
@@ -27,13 +28,46 @@ export default function NotesPage() {
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [isNewNoteDialogOpen, setIsNewNoteDialogOpen] = useState(false);
+  
+  // New Note State
   const [newNoteTitle, setNewNoteTitle] = useState('');
   const [newNoteContent, setNewNoteContent] = useState('');
+  const [newNoteImage, setNewNoteImage] = useState<string | null>(null);
+  const [newNoteVideo, setNewNoteVideo] = useState<string | null>(null);
+  
   const { setIsBackgroundGlowing } = useAppState();
 
   useEffect(() => {
     setIsBackgroundGlowing(isNewNoteDialogOpen);
   }, [isNewNoteDialogOpen, setIsBackgroundGlowing]);
+  
+  const resetNewNoteFields = () => {
+    setNewNoteTitle('');
+    setNewNoteContent('');
+    setNewNoteImage(null);
+    setNewNoteVideo(null);
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>, fileType: 'image' | 'video') => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      if (fileType === 'image') setNewNoteImage(null);
+      if (fileType === 'video') setNewNoteVideo(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (fileType === 'image') {
+        setNewNoteImage(dataUrl);
+      } else {
+        setNewNoteVideo(dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
 
   const handleAddNote = () => {
     if (!newNoteTitle.trim() || !newNoteContent.trim()) {
@@ -44,9 +78,8 @@ export default function NotesPage() {
       });
       return;
     }
-    const newNoteId = addNote(newNoteTitle, newNoteContent);
-    setNewNoteTitle('');
-    setNewNoteContent('');
+    const newNoteId = addNote(newNoteTitle, newNoteContent, newNoteImage, newNoteVideo);
+    resetNewNoteFields();
     setIsNewNoteDialogOpen(false);
     toast({
       title: "Note Created",
@@ -136,7 +169,13 @@ export default function NotesPage() {
                 onClick={() => router.push(`/notes/${note.id}`)}
               >
                 <CardHeader>
-                  <CardTitle className="truncate">{note.title || 'Untitled Note'}</CardTitle>
+                  <CardTitle className="truncate flex items-center justify-between">
+                    <span className="truncate">{note.title || 'Untitled Note'}</span>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      {note.imageUrl && <ImageIcon className="h-4 w-4" />}
+                      {note.videoUrl && <VideoIcon className="h-4 w-4" />}
+                    </div>
+                  </CardTitle>
                   <CardDescription>Last updated: {formatDate(note.updatedAt)}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -192,18 +231,21 @@ export default function NotesPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isNewNoteDialogOpen} onOpenChange={setIsNewNoteDialogOpen}>
+      <Dialog open={isNewNoteDialogOpen} onOpenChange={(isOpen) => {
+          if (!isOpen) resetNewNoteFields();
+          setIsNewNoteDialogOpen(isOpen);
+        }}>
         <DialogContent className="sm:max-w-lg border-primary glow-sm">
           <DialogHeader>
             <DialogTitle>Create a New Note</DialogTitle>
             <DialogDescription>
-              Fill in the details for your new note. Both fields are required.
+              Fill in the details for your new note. Media is optional.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="note-title" className="text-right">
-                Title
+                Title*
               </Label>
               <Input
                 id="note-title"
@@ -215,7 +257,7 @@ export default function NotesPage() {
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="note-content" className="text-right pt-2">
-                Content
+                Content*
               </Label>
               <Textarea
                 id="note-content"
@@ -225,6 +267,40 @@ export default function NotesPage() {
                 placeholder="Start writing your note here..."
               />
             </div>
+             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="note-image" className="text-right">
+                Image
+              </Label>
+              <Input
+                id="note-image"
+                type="file"
+                accept="image/jpeg,image/png"
+                onChange={(e) => handleFileChange(e, 'image')}
+                className="col-span-3"
+              />
+            </div>
+            {newNoteImage && (
+              <div className="col-start-2 col-span-3">
+                  <Image src={newNoteImage} alt="Image preview" width={100} height={100} className="rounded-md object-cover" />
+              </div>
+            )}
+             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="note-video" className="text-right">
+                Video
+              </Label>
+              <Input
+                id="note-video"
+                type="file"
+                accept="video/mp4,video/webm"
+                onChange={(e) => handleFileChange(e, 'video')}
+                className="col-span-3"
+              />
+            </div>
+             {newNoteVideo && (
+              <div className="col-start-2 col-span-3">
+                  <video src={newNoteVideo} controls width="200" className="rounded-md" />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <DialogClose asChild>
@@ -241,3 +317,4 @@ export default function NotesPage() {
     </main>
   );
 }
+

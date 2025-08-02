@@ -14,8 +14,8 @@ export default function NotePage() {
   const noteId = params.noteId as string;
   const note = isLoaded ? notes.find(n => n.id === noteId) : undefined;
 
-  const handleUpdateNote = (id: string, title: string, content: string) => {
-    updateNote(id, title, content);
+  const handleUpdateNote = (id: string, title: string, content: string, imageUrl?: string | null, videoUrl?: string | null) => {
+    updateNote(id, title, content, imageUrl, videoUrl);
   };
 
   const handleDeleteNote = (id: string) => {

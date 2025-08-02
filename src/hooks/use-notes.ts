@@ -34,7 +34,7 @@ export function useNotes() {
     }
   }, [notes, isLoaded]);
 
-  const addNote = useCallback((title: string, content: string) => {
+  const addNote = useCallback((title: string, content: string, imageUrl?: string | null, videoUrl?: string | null) => {
     const timestamp = Date.now();
     const newNote: Note = {
       id: `note-${timestamp}`,
@@ -42,15 +42,17 @@ export function useNotes() {
       content,
       createdAt: timestamp,
       updatedAt: timestamp,
+      imageUrl: imageUrl || null,
+      videoUrl: videoUrl || null,
     };
     setNotes(prevNotes => [newNote, ...prevNotes].sort((a, b) => b.updatedAt - a.updatedAt));
     return newNote.id;
   }, []);
 
-  const updateNote = useCallback((id: string, title: string, content: string) => {
+  const updateNote = useCallback((id: string, title: string, content: string, imageUrl?: string | null, videoUrl?: string | null) => {
     setNotes(prevNotes =>
       prevNotes.map(note =>
-        note.id === id ? { ...note, title, content, updatedAt: Date.now() } : note
+        note.id === id ? { ...note, title, content, imageUrl, videoUrl, updatedAt: Date.now() } : note
       ).sort((a, b) => b.updatedAt - a.updatedAt)
     );
   }, []);

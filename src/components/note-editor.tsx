@@ -20,17 +20,17 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Sparkles, Loader2, NotebookPen, ArrowLeft } from 'lucide-react';
+import { Trash2, Sparkles, Loader2, ArrowLeft } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 
 interface NoteEditorProps {
   note: Note | null;
-  onUpdate: (id: string, title: string, content: string) => void;
+  onUpdate: (id: string, title: string, content: string, imageUrl?: string | null, videoUrl?: string | null) => void;
   onDelete: (id: string) => void;
   onSummarize: (content: string) => Promise<string>;
 }
@@ -58,7 +58,7 @@ export function NoteEditor({ note, onUpdate, onDelete, onSummarize }: NoteEditor
     }
     if (note) {
       debounceTimeout.current = setTimeout(() => {
-        onUpdate(note.id, title, content);
+        onUpdate(note.id, title, content, note.imageUrl, note.videoUrl);
       }, 1000);
     }
     return () => {
@@ -163,6 +163,16 @@ export function NoteEditor({ note, onUpdate, onDelete, onSummarize }: NoteEditor
             className="text-2xl md:text-3xl font-bold border-none shadow-none focus-visible:ring-0 px-0 h-auto mb-4 bg-transparent"
           />
           <ScrollArea className="flex-grow">
+             {note.imageUrl && (
+              <div className="mb-4">
+                <Image src={note.imageUrl} alt="Note image" width={400} height={400} className="rounded-md object-cover max-w-full" />
+              </div>
+            )}
+            {note.videoUrl && (
+              <div className="mb-4">
+                <video src={note.videoUrl} controls width="400" className="rounded-md max-w-full" />
+              </div>
+            )}
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}

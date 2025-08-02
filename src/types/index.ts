@@ -4,4 +4,6 @@ export interface Note {
   content: string;
   createdAt: number;
   updatedAt: number;
+  imageUrl?: string | null;
+  videoUrl?: string | null;
 }
