@@ -3,6 +3,7 @@
 import type { Note } from '@/types';
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSkeleton } from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 interface NoteListProps {
   notes: Note[];
@@ -38,7 +39,10 @@ export function NoteList({ notes, isLoaded, activeNoteId, onSelectNote }: NoteLi
             <SidebarMenuButton
               isActive={note.id === activeNoteId}
               onClick={() => onSelectNote(note.id)}
-              className="h-auto py-2 flex-col items-start"
+              className={cn(
+                "h-auto py-2 flex-col items-start transition-all",
+                note.id === activeNoteId && "glow-sm"
+              )}
             >
               <span className="font-semibold text-sm w-full truncate">{note.title || 'Untitled'}</span>
               <p className="text-xs text-muted-foreground w-full truncate">
