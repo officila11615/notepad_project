@@ -100,6 +100,12 @@ body {
   .animate-star-twinkle {
     animation: twinkle 8s infinite;
   }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-1px); }
+    20%, 40%, 60%, 80% { transform: translateX(1px); }
+  }
   
   @keyframes blob {
     0% {
@@ -162,9 +168,14 @@ body {
   }
   
   .btn-primary-glow:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px 7px hsla(200, 100%, 50%, 0.7), /* Center blue glow */
-                inset 0 0 15px 3px hsla(200, 100%, 50%, 0.6);
+    box-shadow: 0 0 20px 5px hsla(0, 80%, 55%, 0.7);
+  }
+
+  .btn-primary-glow:hover > :not(span) {
+    animation: shake 0.5s ease-in-out;
+  }
+  .btn-primary-glow:hover > span {
+    animation: shake 0.5s ease-in-out;
   }
 
   .btn-primary-glow::before {
@@ -172,20 +183,20 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 250%; /* Increased size for a wider aura */
+    width: 250%; 
     padding-bottom: 250%;
     border-radius: 50%;
     background: conic-gradient(
       from 0deg,
       hsla(0, 100%, 50%, 0.9), 
-      hsla(0, 95%, 55%, 0.8),
+      hsla(25, 95%, 55%, 0.8),
       hsla(0, 100%, 50%, 0.9)
     );
     opacity: 0;
     transition: opacity 0.4s ease-in-out;
     animation: corner-glow 3s linear infinite;
     z-index: 0;
-    filter: blur(15px); /* Add blur for a softer glow */
+    filter: blur(20px);
   }
   
   .btn-primary-glow:hover::before {
