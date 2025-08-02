@@ -2,6 +2,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+import { useAppState } from '@/context/app-state-context';
 
 interface Star {
   key: string;
@@ -11,6 +13,7 @@ interface Star {
 
 export function CosmicBackground() {
   const [stars, setStars] = useState<Star[]>([]);
+  const { isBackgroundGlowing } = useAppState();
 
   useEffect(() => {
     const generateStars = () => {
@@ -50,8 +53,14 @@ export function CosmicBackground() {
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      <div className="absolute inset-0 bg-background">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      <div className={cn(
+          "absolute inset-0 bg-background transition-all duration-500",
+          isBackgroundGlowing && "bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.4),rgba(255,255,255,0))]"
+        )}>
+        <div className={cn(
+          "absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] opacity-0 transition-opacity duration-500",
+          !isBackgroundGlowing && "opacity-100"
+        )}></div>
       </div>
       
       {/* Stars */}

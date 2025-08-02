@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { getSummary } from '@/app/actions';
+import { useAppState } from '@/context/app-state-context';
 
 export default function NotesPage() {
   const { notes, addNote, deleteNote, isLoaded } = useNotes();
@@ -28,6 +29,11 @@ export default function NotesPage() {
   const [isNewNoteDialogOpen, setIsNewNoteDialogOpen] = useState(false);
   const [newNoteTitle, setNewNoteTitle] = useState('');
   const [newNoteContent, setNewNoteContent] = useState('');
+  const { setIsBackgroundGlowing } = useAppState();
+
+  useEffect(() => {
+    setIsBackgroundGlowing(isNewNoteDialogOpen);
+  }, [isNewNoteDialogOpen, setIsBackgroundGlowing]);
 
   const handleAddNote = () => {
     if (!newNoteTitle.trim() || !newNoteContent.trim()) {
@@ -38,7 +44,7 @@ export default function NotesPage() {
       });
       return;
     }
-    addNote(newNoteTitle, newNoteContent);
+    const newNoteId = addNote(newNoteTitle, newNoteContent);
     setNewNoteTitle('');
     setNewNoteContent('');
     setIsNewNoteDialogOpen(false);
@@ -46,6 +52,7 @@ export default function NotesPage() {
       title: "Note Created",
       description: `"${newNoteTitle}" has been saved.`,
     });
+    router.push(`/notes/${newNoteId}`);
   };
 
   const handleDeleteNote = (e: React.MouseEvent, id: string, title: string) => {
