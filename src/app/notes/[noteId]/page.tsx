@@ -10,8 +10,6 @@ export default function NotePage({ params }: { params: { noteId: string } }) {
   const { notes, updateNote, deleteNote, isLoaded } = useNotes();
   const router = useRouter();
 
-  // The noteId is accessed directly from params, which is correct for client components.
-  // The warning is a heads-up for future Next.js changes. This usage is fine for now.
   const noteId = params.noteId;
   const note = notes.find(n => n.id === noteId);
 
