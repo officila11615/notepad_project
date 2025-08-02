@@ -5,74 +5,55 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAppState } from '@/context/app-state-context';
 
-interface Star {
-  key: string;
-  className: string;
-  style: React.CSSProperties;
-}
-
 export function CosmicBackground() {
-  const [stars, setStars] = useState<Star[]>([]);
   const { isBackgroundGlowing } = useAppState();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const generateStars = () => {
-      const newStars: Star[] = [];
-      // Small stars
-      for (let i = 0; i < 50; i++) {
-        newStars.push({
-          key: `star-small-${i}`,
-          className: 'absolute w-0.5 h-0.5 bg-gray-400 rounded-full animate-star-twinkle',
-          style: {
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 8}s`,
-            animationDuration: `${Math.random() * 4 + 4}s`,
-          },
-        });
+    setIsMounted(true);
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (window.innerWidth < 768) return; 
+      const { clientX, clientY } = e;
+      const x = (clientX / window.innerWidth) * 2 - 1;
+      const y = (clientY / window.innerHeight) * 2 - 1;
+      
+      const container = document.getElementById('cosmic-background-container');
+      if (container) {
+        container.style.setProperty('--mouse-x', `${x * 100}`);
+        container.style.setProperty('--mouse-y', `${y * 100}`);
       }
-      // Medium stars
-      for (let i = 0; i < 25; i++) {
-        newStars.push({
-          key: `star-medium-${i}`,
-          className: 'absolute w-1 h-1 bg-gray-300 rounded-full animate-star-twinkle',
-          style: {
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 8}s`,
-            animationDuration: `${Math.random() * 5 + 5}s`,
-          },
-        });
-      }
-      setStars(newStars);
     };
 
-    generateStars();
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
-
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div 
+      id="cosmic-background-container"
+      className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-background"
+      style={{
+        '--mouse-x': '0',
+        '--mouse-y': '0',
+      } as React.CSSProperties}
+    >
       <div className={cn(
-          "absolute inset-0 bg-background transition-opacity duration-1000",
-          isBackgroundGlowing ? "opacity-0" : "opacity-100"
-        )}>
+          "absolute inset-0 transition-opacity duration-1000",
+          isBackgroundGlowing ? "opacity-30" : "opacity-100"
+      )}>
+        <div id="stars" className="absolute inset-0"></div>
+        <div id="stars2" className="absolute inset-0"></div>
+        <div id="stars3" className="absolute inset-0"></div>
+        <div id="nebula" className="absolute inset-0"></div>
       </div>
-      <div className={cn(
+       <div className={cn(
           "absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--primary-rgb),0.3),rgba(var(--primary-rgb),0)_50%)] transition-opacity duration-1000",
           isBackgroundGlowing ? "opacity-100" : "opacity-0"
         )}>
-      </div>
-      
-      {/* Stars */}
-      <div id="stars-container" className="absolute inset-0">
-        {stars.map(star => (
-          <div
-            key={star.key}
-            className={star.className}
-            style={star.style}
-          />
-        ))}
       </div>
     </div>
   );

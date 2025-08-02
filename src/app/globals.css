@@ -89,11 +89,11 @@ body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="5"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: hsl(10, 100%, 70%); stop-opacity: 0.8" /><stop offset="70%" style="stop-color: hsl(30, 100%, 60%); stop-opacity: 0.5" /><stop offset="90%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0.3" /><stop offset="100%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0" /></radialGradient></defs><ellipse cx="32" cy="32" rx="20" ry="15" fill="url(%23glow)" filter="url(%23blur)" /></svg>') 32 32, auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: white; stop-opacity: 0.8" /><stop offset="70%" style="stop-color: white; stop-opacity: 0" /></radialGradient></defs><circle cx="32" cy="32" r="5" fill="none" stroke="hsl(10, 100%, 70%)" stroke-width="2" filter="url(%23blur)" /></svg>') 32 32, auto;
   }
 
   button, a, [role="button"], .cursor-pointer {
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="6"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: hsl(10, 100%, 80%); stop-opacity: 0.9" /><stop offset="70%" style="stop-color: hsl(30, 100%, 70%); stop-opacity: 0.6" /><stop offset="90%" style="stop-color: hsl(180, 100%, 60%); stop-opacity: 0.4" /><stop offset="100%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0" /></radialGradient></defs><g filter="url(%23blur)"><ellipse cx="32" cy="32" rx="25" ry="17" fill="url(%23glow)"/></g><circle cx="32" cy="32" r="5" fill="none" stroke="white" stroke-width="1.5" /></svg>') 32 32, pointer;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="5"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: hsl(10, 100%, 70%); stop-opacity: 0.8" /><stop offset="70%" style="stop-color: hsl(30, 100%, 60%); stop-opacity: 0.5" /><stop offset="90%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0.3" /><stop offset="100%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0" /></radialGradient></defs><g filter="url(%23blur)"><ellipse cx="32" cy="32" rx="25" ry="17" fill="url(%23glow)"/></g><circle cx="32" cy="32" r="5" fill="none" stroke="white" stroke-width="1.5" /></svg>') 32 32, pointer;
   }
 }
 
@@ -114,6 +114,70 @@ body {
       transform: scale(1.02);
     }
   }
+
+  @keyframes move-stars {
+    from { transform: translateY(0px) rotate(0deg); }
+    to { transform: translateY(-2000px) rotate(30deg); }
+  }
+  
+  @keyframes move-stars-2 {
+    from { transform: translateY(0px) rotate(0deg); }
+    to { transform: translateY(-2000px) rotate(60deg); }
+  }
+
+  @keyframes rotate-nebula {
+    from { transform: rotate(0deg) scale(1.5); }
+    to { transform: rotate(360deg) scale(1.5); }
+  }
+}
+
+/* New Cosmic Background Styles */
+#stars, #stars2, #stars3 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(calc(var(--mouse-x) * 0.01 * -1px), calc(var(--mouse-y) * 0.01 * -1px));
+}
+
+#stars {
+  background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="100" cy="100" r="1.2"></circle><circle fill="white" cx="500" cy="800" r="0.8"></circle><circle fill="white" cx="1200" cy="400" r="1.1"></circle><circle fill="white" cx="1800" cy="900" r="0.7"></circle><circle fill="white" cx="900" cy="1500" r="1.3"></circle><circle fill="white" cx="1500" cy="1800" r="0.9"></circle><circle fill="white" cx="300" cy="1200" r="0.8"></circle><circle fill="white" cx="1700" cy="200" r="1.0"></circle></svg>');
+  animation: move-stars 200s linear infinite;
+  opacity: 0.8;
+}
+
+#stars2 {
+  background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="250" cy="600" r="0.9"></circle><circle fill="white" cx="750" cy="200" r="0.6"></circle><circle fill="white" cx="1400" cy="1100" r="0.8"></circle><circle fill="white" cx="1900" cy="500" r="0.5"></circle><circle fill="white" cx="400" cy="1800" r="1.0"></circle><circle fill="white" cx="1100" cy="1300" r="0.7"></circle><circle fill="white" cx="1600" cy="100" r="0.6"></circle><circle fill="white" cx="100" cy="1900" r="0.9"></circle></svg>');
+  animation: move-stars-2 250s linear infinite;
+  opacity: 0.6;
+}
+
+#stars3 {
+   background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="450" cy="300" r="0.6"></circle><circle fill="white" cx="950" cy="1000" r="0.4"></circle><circle fill="white" cx="1600" cy="1400" r="0.5"></circle><circle fill="white" cx="100" cy="1000" r="0.3"></circle><circle fill="white" cx="800" cy="1900" r="0.7"></circle><circle fill="white" cx="1300" cy="500" r="0.5"></circle><circle fill="white" cx="1800" cy="1600" r="0.4"></circle><circle fill="white" cx="200" cy="100" r="0.6"></circle></svg>');
+  animation: move-stars 300s linear infinite;
+  opacity: 0.4;
+}
+
+#nebula {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.3;
+  mix-blend-mode: screen;
+  transform: translate(calc(var(--mouse-x) * 0.02 * -1px), calc(var(--mouse-y) * 0.02 * -1px));
+}
+
+#nebula::after {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background: radial-gradient(ellipse at 30% 20%, hsl(260 100% 70% / 0.5), transparent 50%),
+              radial-gradient(ellipse at 70% 80%, hsl(180 100% 50% / 0.5), transparent 50%),
+              radial-gradient(ellipse at 50% 50%, hsl(300 100% 70% / 0.3), transparent 60%);
+  animation: rotate-nebula 240s linear infinite;
 }
 
 @layer components {
