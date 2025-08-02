@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export function OrbitalCursor() {
+  const [isMounted, setIsMounted] = useState(false);
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -12,6 +13,8 @@ export function OrbitalCursor() {
   const idleTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    setIsMounted(true);
+
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
       if (!isVisible) setIsVisible(true);
@@ -62,6 +65,10 @@ export function OrbitalCursor() {
       }
     };
   }, [isVisible]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div
