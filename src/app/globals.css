@@ -111,6 +111,11 @@ body {
     animation: orbit-3 120s linear infinite;
   }
 
+  .animate-shooting-star {
+    animation: shooting-star 10s linear infinite;
+  }
+
+
   @keyframes blob {
     0% {
       transform: translate(0px, 0px) scale(1);
@@ -144,6 +149,20 @@ body {
   @keyframes orbit-3 {
     from { transform: rotate(0deg) translateX(400px) rotate(0deg); }
     to   { transform: rotate(360deg) translateX(400px) rotate(-360deg); }
+  }
+
+  @keyframes shooting-star {
+    0% {
+      transform: translateX(0) translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-50vw) translateY(50vh) rotate(0deg);
+      opacity: 0;
+    }
   }
 }
 

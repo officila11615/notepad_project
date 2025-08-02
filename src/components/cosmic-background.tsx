@@ -9,8 +9,14 @@ interface Star {
   style: React.CSSProperties;
 }
 
+interface ShootingStar {
+  key: string;
+  style: React.CSSProperties;
+}
+
 export function CosmicBackground() {
   const [stars, setStars] = useState<Star[]>([]);
+  const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]);
 
   useEffect(() => {
     const generateStars = () => {
@@ -44,12 +50,30 @@ export function CosmicBackground() {
       setStars(newStars);
     };
 
+    const generateShootingStars = () => {
+        const newShootingStars: ShootingStar[] = [];
+        for (let i = 0; i < 5; i++) {
+            newShootingStars.push({
+                key: `shooting-star-${i}`,
+                style: {
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 10 + 5}s`,
+                    animationDuration: `${Math.random() * 2 + 1}s`,
+                    transform: `rotate(${Math.random() * 360}deg)`,
+                },
+            });
+        }
+        setShootingStars(newShootingStars);
+    };
+
     generateStars();
+    generateShootingStars();
   }, []);
 
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
       <div className="absolute inset-0 bg-background">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
       </div>
@@ -60,6 +84,17 @@ export function CosmicBackground() {
           <div
             key={star.key}
             className={star.className}
+            style={star.style}
+          />
+        ))}
+      </div>
+
+       {/* Shooting Stars */}
+       <div id="shooting-stars-container" className="absolute inset-0">
+        {shootingStars.map(star => (
+          <div
+            key={star.key}
+            className="absolute h-0.5 w-24 bg-gradient-to-r from-white to-transparent animate-shooting-star"
             style={star.style}
           />
         ))}
