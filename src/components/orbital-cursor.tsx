@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 export function OrbitalCursor() {
@@ -21,18 +21,12 @@ export function OrbitalCursor() {
         setIsVisible(false);
     };
 
-    const handleMouseEnter = () => {
-      setIsVisible(true);
-    }
-
-    window.addEventListener('mousemove', handleMouseMove);
+    document.documentElement.addEventListener('mousemove', handleMouseMove);
     document.documentElement.addEventListener('mouseleave', handleMouseLeave);
-    document.documentElement.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      document.documentElement.removeEventListener('mousemove', handleMouseMove);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
-      document.documentElement.removeEventListener('mouseenter', handleMouseEnter);
     };
   }, [isVisible]);
 
@@ -51,7 +45,6 @@ export function OrbitalCursor() {
       }}
     >
       <div className="cursor-dot" />
-      <div className="cursor-ring" />
     </div>
   );
 }

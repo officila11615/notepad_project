@@ -207,7 +207,7 @@ body {
   transition: opacity 0.2s ease-out;
 }
 
-.cursor-dot, .cursor-ring {
+.cursor-dot {
   position: absolute;
   border-radius: 50%;
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
@@ -220,18 +220,9 @@ body {
   height: 32px;
   top: -16px;
   left: -16px;
-  background-color: hsl(var(--accent) / 0.2);
-  box-shadow: 0 0 15px hsl(var(--accent) / 0.3);
-  border: 2px solid hsl(var(--accent) / 0.5);
-}
-
-.cursor-ring {
-  width: 38px;
-  height: 38px;
-  top: -19px;
-  left: -19px;
-  border: 1px solid hsl(var(--accent) / 0.3);
-  box-shadow: none;
+  background-color: hsl(var(--foreground) / 0.15);
+  box-shadow: 0 0 10px hsl(var(--foreground) / 0.2);
+  border: 1px solid hsl(var(--foreground) / 0.25);
 }
 
 .cursor-container.hidden {
