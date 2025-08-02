@@ -92,10 +92,10 @@ export default function NotesPage() {
             Notes Hub
           </h1>
           <div className="flex items-center gap-4">
-             <Button asChild variant="outline">
+             <Button asChild variant="outline" className="btn-primary-glow">
                 <Link href="/">Back to Home</Link>
             </Button>
-            <Button onClick={() => setIsNewNoteDialogOpen(true)} className="glow-sm hover:glow-md transition-all">
+            <Button onClick={() => setIsNewNoteDialogOpen(true)} className="btn-primary-glow">
               <FilePlus className="mr-2 h-4 w-4" />
               New Note
             </Button>
@@ -106,8 +106,8 @@ export default function NotesPage() {
           <div className="text-center py-20">
             <h2 className="text-2xl font-semibold mb-2">The void is empty.</h2>
             <p className="text-muted-foreground mb-4">Create your first note to populate the cosmos.</p>
-            <Button onClick={() => setIsNewNoteDialogOpen(true)} size="lg" className="glow-md hover:glow-lg transition-all">
-              Create a Note <ArrowRight className="ml-2 h-5 w-5" />
+            <Button onClick={() => setIsNewNoteDialogOpen(true)} size="lg" className="btn-primary-glow">
+              <span>Create a Note <ArrowRight className="ml-2 h-5 w-5 inline" /></span>
             </Button>
           </div>
         ) : (

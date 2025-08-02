@@ -30,9 +30,9 @@ export default function Home() {
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
             Your modern notepad for seamless note-taking, powered by AI. Unleash your creativity and let your ideas flow into the digital cosmos.
           </p>
-          <Button asChild size="lg" className="glow-md hover:glow-lg transition-all group">
+          <Button asChild size="lg" className="btn-primary-glow group">
             <Link href="/notes">
-              Get Started <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <span>Get Started <ArrowRight className="inline ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" /></span>
             </Link>
           </Button>
         </div>

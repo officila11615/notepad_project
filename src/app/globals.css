@@ -120,6 +120,30 @@ body {
     0%, 100% { opacity: 0.2; }
     50% { opacity: 1; }
   }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes corner-glow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
 }
 
 @layer components {
@@ -131,5 +155,49 @@ body {
   }
   .glow-lg {
     @apply shadow-[0_0_24px_hsl(var(--primary)/0.6)];
+  }
+
+  .btn-primary-glow {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+  
+  .btn-primary-glow:hover {
+    @apply animate-pulse-glow;
+  }
+
+  .btn-primary-glow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    padding-bottom: 200%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 0deg,
+      hsl(260 100% 70% / 0.8), 
+      hsl(300 100% 70% / 0.8),
+      hsl(180 100% 50% / 0.8),
+      hsl(210 100% 60% / 0.8),
+      hsl(260 100% 70% / 0.8)
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    animation: corner-glow 4s linear infinite;
+    z-index: 0;
+  }
+  
+  .btn-primary-glow:hover::before {
+    opacity: 1;
+  }
+
+  .btn-primary-glow > :not(span) {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-primary-glow > span {
+     position: relative;
+    z-index: 1;
   }
 }
