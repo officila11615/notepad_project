@@ -93,33 +93,10 @@ body {
 }
 
 @layer utilities {
-  .animate-blob {
-    animation: blob 7s infinite;
-  }
-  
-  .animate-star-twinkle {
-    animation: twinkle 8s infinite;
-  }
-
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(-1px); }
     20%, 40%, 60%, 80% { transform: translateX(1px); }
-  }
-  
-  @keyframes blob {
-    0% {
-      transform: translate(0px, 0px) scale(1);
-    }
-    33% {
-      transform: translate(30px, -50px) scale(1.1);
-    }
-    66% {
-      transform: translate(-20px, 20px) scale(0.9);
-    }
-    100% {
-      transform: translate(0px, 0px) scale(1);
-    }
   }
 
   @keyframes twinkle {
@@ -150,6 +127,9 @@ body {
     @apply shadow-[0_0_24px_hsl(var(--primary)/0.6)];
   }
   
+  .btn-primary-glow:hover {
+    @apply shadow-[0_0_12px_2px_hsl(var(--primary)/0.6)];
+  }
   .btn-primary-glow:hover > * {
     animation: shake 0.5s ease-in-out infinite;
   }
