@@ -105,11 +105,11 @@ export default function NotesPage() {
   };
 
   const handleAddNote = () => {
-    if (!newNoteTitle.trim() || !newNoteContent.trim()) {
+    if (!newNoteTitle.trim()) {
       toast({
         variant: 'destructive',
         title: "Cannot save note",
-        description: "Please fill in both title and content.",
+        description: "Please provide a title for your note.",
       });
       return;
     }
@@ -150,7 +150,7 @@ export default function NotesPage() {
     }
   };
   
-  const isSaveDisabled = !newNoteTitle.trim() || !newNoteContent.trim();
+  const isSaveDisabled = !newNoteTitle.trim();
 
   return (
     <main className="min-h-screen bg-transparent text-foreground p-4 sm:p-6 md:p-8">
@@ -203,28 +203,19 @@ export default function NotesPage() {
                 className="bg-card/80 hover:bg-card/100 border-border/50 hover:border-primary/50 transition-all cursor-pointer flex flex-col glow-sm hover:glow-md"
                 onClick={() => router.push(`/notes/${note.id}`)}
               >
-                <CardHeader>
-                  <CardTitle className="truncate flex items-center justify-between">
-                    <span className="truncate">{note.title || 'Untitled Note'}</span>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      {note.imageUrl && <ImageIcon className="h-4 w-4" />}
-                      {note.videoUrl && <VideoIcon className="h-4 w-4" />}
-                    </div>
+                <CardHeader className="flex-grow">
+                  <CardTitle className="truncate">
+                    {note.title || 'Untitled Note'}
                   </CardTitle>
                   <CardDescription>Last updated: {formatDate(note.updatedAt)}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {note.content || 'No content'}
-                  </p>
-                </CardContent>
                 <CardFooter className="flex justify-end items-center gap-2">
                    <Button
                       variant="ghost"
                       size="icon"
                       className="text-accent hover:text-accent hover:bg-accent/10"
                       onClick={(e) => handleSummarize(e, note.content)}
-                      disabled={isSummarizing}
+                      disabled={isSummarizing || !note.content.trim()}
                       aria-label="Summarize note"
                    >
                      <Sparkles className="h-4 w-4" />
@@ -292,7 +283,7 @@ export default function NotesPage() {
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="note-content" className="text-right pt-2">
-                Content*
+                Content
               </Label>
               <Textarea
                 id="note-content"
@@ -376,4 +367,3 @@ export default function NotesPage() {
     </main>
   );
 }
-
