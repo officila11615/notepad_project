@@ -89,6 +89,11 @@ body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(260 100% 80%)" stroke-width="2"><circle cx="12" cy="12" r="4" fill="hsl(260 100% 70% / 0.5)"/></svg>') 12 12, auto;
+  }
+
+  button, a, [role="button"], .cursor-pointer {
+     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(260 100% 80%)" stroke-width="2"><circle cx="12" cy="12" r="10" fill="hsl(260 100% 70% / 0.3)"/></svg>') 12 12, pointer;
   }
 }
 
@@ -128,6 +133,5 @@ body {
   .btn-primary-glow:hover {
     transform: scale(1.02);
     @apply shadow-[0_0_15px_hsl(var(--primary)/0.6)];
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(260 100% 80%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="hsl(260 100% 70% / 0.3)"/></svg>'), auto;
   }
 }
