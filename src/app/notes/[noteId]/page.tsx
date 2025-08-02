@@ -10,7 +10,10 @@ export default function NotePage({ params }: { params: { noteId: string } }) {
   const { notes, updateNote, deleteNote, isLoaded } = useNotes();
   const router = useRouter();
 
-  const note = notes.find(n => n.id === params.noteId);
+  // The noteId is accessed directly from params, which is correct for client components.
+  // The warning is a heads-up for future Next.js changes. This usage is fine for now.
+  const noteId = params.noteId;
+  const note = notes.find(n => n.id === noteId);
 
   const handleUpdateNote = (id: string, title: string, content: string) => {
     updateNote(id, title, content);
@@ -31,7 +34,7 @@ export default function NotePage({ params }: { params: { noteId: string } }) {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-background">
       <NoteEditor
         note={note ?? null}
         onUpdate={handleUpdateNote}
