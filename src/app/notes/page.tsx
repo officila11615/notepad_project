@@ -1,19 +1,27 @@
 
 'use client';
 
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { FilePlus, Trash2, ArrowRight } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { getSummary } from '@/app/actions';
 
 export default function NotesPage() {
   const { notes, addNote, deleteNote, isLoaded } = useNotes();
   const router = useRouter();
   const { toast } = useToast();
+  const [isSummarizing, startSummarizeTransition] = useTransition();
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
 
   const handleAddNote = () => {
     const newNoteId = addNote();
@@ -29,12 +37,29 @@ export default function NotesPage() {
     });
   };
 
+  const handleSummarize = (e: React.MouseEvent, content: string) => {
+    e.stopPropagation(); // prevent card click
+    if (content.trim().length > 0) {
+      startSummarizeTransition(async () => {
+        const result = await getSummary(content);
+        setSummary(result);
+        setIsSummaryDialogOpen(true);
+      });
+    } else {
+      toast({
+        variant: 'destructive',
+        title: "Cannot summarize",
+        description: "Note is empty.",
+      });
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <h1 className="text-4xl font-extrabold tracking-tight text-primary mb-4 sm:mb-0">
-            Your Notes
+            Notes Hub
           </h1>
           <div className="flex items-center gap-4">
              <Button asChild variant="outline">
@@ -57,6 +82,23 @@ export default function NotesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {!isLoaded && Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="bg-card/80 border-border/50">
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-2/3" />
+                </CardContent>
+                <CardFooter className="flex justify-end gap-2">
+                   <Skeleton className="h-8 w-8" />
+                   <Skeleton className="h-8 w-8" />
+                </CardFooter>
+              </Card>
+            ))}
             {notes.map(note => (
               <Card 
                 key={note.id} 
@@ -72,15 +114,25 @@ export default function NotesPage() {
                     {note.content || 'No content'}
                   </p>
                 </CardContent>
-                <CardFooter className="flex justify-end">
+                <CardFooter className="flex justify-end items-center gap-2">
+                   <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-accent hover:text-accent hover:bg-accent/10"
+                      onClick={(e) => handleSummarize(e, note.content)}
+                      disabled={isSummarizing}
+                      aria-label="Summarize note"
+                   >
+                     <Sparkles className="h-4 w-4" />
+                   </Button>
                    <Button 
                     variant="ghost" 
                     size="icon" 
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     onClick={(e) => handleDeleteNote(e, note.id, note.title)}
+                    aria-label="Delete note"
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete note</span>
                   </Button>
                 </CardFooter>
               </Card>
@@ -88,6 +140,27 @@ export default function NotesPage() {
           </div>
         )}
       </div>
+
+       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
+        <DialogContent className="sm:max-w-md border-primary glow-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-accent" /> AI Summary</DialogTitle>
+            <DialogDescription>
+              Here's a summary of the note.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] my-4">
+            {isSummarizing ? (
+              <div className="space-y-2 pr-4">
+                <Loader2 className="w-8 h-8 mx-auto my-4 text-primary/50 animate-spin" />
+                <p className="text-center text-muted-foreground">Generating summary...</p>
+              </div>
+            ) : (
+              <p className="text-sm text-foreground whitespace-pre-wrap pr-4">{summary}</p>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
