@@ -95,6 +95,14 @@ body {
 
   button, a, [role="button"], .cursor-pointer {
     cursor: none;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .hovering body a:hover,
+  .hovering body button:hover,
+  .hovering body [role="button"]:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 15px hsl(var(--accent) / 0.5), 0 0 30px hsl(var(--accent) / 0.3);
   }
 }
 
@@ -233,6 +241,7 @@ body {
   width: 32px;
   height: 32px;
   border: 1px solid hsla(var(--accent), 0.5);
+  box-shadow: 0 0 15px hsla(var(--accent), 0.2), 0 0 30px hsla(var(--accent), 0.1);
   transition: transform 0.3s ease-in-out;
 }
 
@@ -254,14 +263,14 @@ body {
 }
 
 .cursor-container.hovering .cursor-ring {
-  transform: scale(1.5);
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 10px hsla(var(--primary), 0.3);
+  transform: scale(1.8);
+  border-color: hsl(var(--accent));
+  box-shadow: 0 0 20px hsl(var(--accent) / 0.5), 0 0 40px hsl(var(--accent) / 0.3);
 }
 
 .cursor-container.hovering .cursor-dot {
-  box-shadow: 0 0 15px hsl(var(--primary)), 0 0 30px hsl(var(--primary)), 0 0 45px hsl(var(--primary));
-  background-color: hsl(var(--primary));
+  box-shadow: 0 0 15px hsl(var(--accent)), 0 0 30px hsl(var(--accent)), 0 0 45px hsl(var(--accent));
+  background-color: hsl(var(--accent));
 }
 
 .cursor-container.hidden {
