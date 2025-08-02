@@ -204,18 +204,17 @@ body {
   left: 0;
   pointer-events: none;
   z-index: 9999;
-  mix-blend-mode: difference;
 }
 
 .cursor-dot {
   position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 12px;
-  height: 12px;
+  top: -7px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background-color: white;
-  transition: transform 0.2s ease-out;
+  mix-blend-mode: difference;
 }
 
 .cursor-ring {
@@ -227,5 +226,5 @@ body {
   border-radius: 50%;
   border: 2px solid white;
   opacity: 0.5;
-  transition: transform 0.2s ease-out;
+  mix-blend-mode: difference;
 }
