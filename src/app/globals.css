@@ -94,6 +94,22 @@ body {
   .animate-blob {
     animation: blob 7s infinite;
   }
+  
+  .animate-star-twinkle {
+    animation: twinkle 8s infinite;
+  }
+  
+  .animate-planet-orbit-1 {
+    animation: orbit-1 60s linear infinite;
+  }
+  
+  .animate-planet-orbit-2 {
+    animation: orbit-2 90s linear infinite;
+  }
+  
+  .animate-planet-orbit-3 {
+    animation: orbit-3 120s linear infinite;
+  }
 
   @keyframes blob {
     0% {
@@ -108,6 +124,26 @@ body {
     100% {
       transform: translate(0px, 0px) scale(1);
     }
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes orbit-1 {
+    from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+  }
+
+  @keyframes orbit-2 {
+    from { transform: rotate(0deg) translateX(250px) rotate(0deg); }
+    to   { transform: rotate(-360deg) translateX(250px) rotate(360deg); }
+  }
+
+  @keyframes orbit-3 {
+    from { transform: rotate(0deg) translateX(400px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(400px) rotate(-360deg); }
   }
 }
 
