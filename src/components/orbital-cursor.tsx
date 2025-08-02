@@ -1,19 +1,27 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export function OrbitalCursor() {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const moveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
+      setIsVisible(true);
+      setIsMoving(true);
+
+      if (moveTimeout.current) {
+        clearTimeout(moveTimeout.current);
+      }
+
+      moveTimeout.current = setTimeout(() => setIsMoving(false), 300);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -29,28 +37,36 @@ export function OrbitalCursor() {
         setIsHovering(false);
       }
     };
+    
+    const handleMouseLeave = () => {
+        setIsVisible(false);
+    };
 
     window.addEventListener('mousemove', handleMouseMove);
     document.body.addEventListener('mouseover', handleMouseOver);
     document.body.addEventListener('mouseout', handleMouseOut);
+    document.documentElement.addEventListener('mouseleave', handleMouseLeave);
+
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.body.removeEventListener('mouseover', handleMouseOver);
       document.body.removeEventListener('mouseout', handleMouseOut);
+      document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
+      if (moveTimeout.current) {
+        clearTimeout(moveTimeout.current);
+      }
     };
   }, []);
-  
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <div
-      className="fixed inset-0 pointer-events-none z-50"
+      className={cn(
+        "fixed inset-0 pointer-events-none z-50 transition-opacity duration-300",
+        isVisible ? "opacity-100" : "opacity-0"
+        )}
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: 'transform 0.1s ease-out',
       }}
     >
       <div 
@@ -68,7 +84,7 @@ export function OrbitalCursor() {
                  isHovering ? "scale-125" : "scale-100"
             )} 
             style={{
-                animation: 'orbit 4s linear infinite',
+                animation: isMoving ? 'orbit 4s linear infinite' : 'none',
                 boxShadow: `0 0 6px 0 hsl(var(--accent))`,
             }}
         />
