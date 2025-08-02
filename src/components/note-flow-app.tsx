@@ -14,9 +14,10 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FilePlus, BookText } from 'lucide-react';
+import { FilePlus, BookText, ArrowLeft } from 'lucide-react';
 import { getSummary } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 interface NoteFlowAppProps {
   initialNoteId: string;
@@ -30,12 +31,23 @@ export function NoteFlowApp({ initialNoteId }: NoteFlowAppProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (initialNoteId) {
-      setSelectedNoteId(initialNoteId);
+    if (isLoaded && notes.length === 0) {
+      const newNoteId = addNote();
+      router.replace(`/notes/${newNoteId}`);
     }
-  }, [initialNoteId]);
+  }, [isLoaded, notes, addNote, router]);
 
   useEffect(() => {
+    if (initialNoteId) {
+      setSelectedNoteId(initialNoteId);
+    } else if (isLoaded && notes.length > 0) {
+      const latestNote = notes.sort((a, b) => b.updatedAt - a.updatedAt)[0];
+      router.replace(`/notes/${latestNote.id}`);
+    }
+  }, [initialNoteId, isLoaded, notes, router]);
+
+  useEffect(() => {
+    // Prevent pushing to router if it's the initial render with a selected note
     if (selectedNoteId && selectedNoteId !== initialNoteId) {
       router.push(`/notes/${selectedNoteId}`);
     }
@@ -93,8 +105,16 @@ export function NoteFlowApp({ initialNoteId }: NoteFlowAppProps) {
         <SidebarHeader>
           <div className="flex items-center justify-between p-2">
             <div className="flex items-center gap-2">
-              <BookText className="w-6 h-6 text-primary glow-sm" />
-              <h1 className="text-xl font-bold">NoteFlow</h1>
+              <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                <Link href="/">
+                  <ArrowLeft className="h-5 w-5" />
+                  <span className="sr-only">Back to Home</span>
+                </Link>
+              </Button>
+              <div className="flex items-center gap-2">
+                <BookText className="w-6 h-6 text-primary glow-sm" />
+                <h1 className="text-xl font-bold">NoteFlow</h1>
+              </div>
             </div>
           </div>
           <div className="px-2 pb-2 flex items-center gap-2">
