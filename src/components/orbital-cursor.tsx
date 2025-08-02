@@ -6,14 +6,13 @@ import { cn } from '@/lib/utils';
 
 export function OrbitalCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [auraPosition, setAuraPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  
-  const auraRef = useRef<HTMLDivElement>(null);
+
   const idleTimeout = useRef<NodeJS.Timeout | null>(null);
-  
-  const auraPosition = useRef({ x: 0, y: 0 }).current;
+  const animationFrame = useRef<number | null>(null);
 
   useEffect(() => {
     const resetIdleTimeout = () => {
@@ -31,43 +30,37 @@ export function OrbitalCursor() {
     };
 
     const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a, button, [role="button"]')) {
+      if ((e.target as HTMLElement).closest('a, button, [role="button"]')) {
         setIsHovering(true);
       }
     };
     
     const handleMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a, button, [role="button"]')) {
+      if ((e.target as HTMLElement).closest('a, button, [role="button"]')) {
         setIsHovering(false);
       }
     };
     
-    const handleMouseLeave = () => {
-      setIsVisible(false);
-    };
+    const handleMouseLeave = () => setIsVisible(false);
     
-    const animateAura = () => {
-        if (!auraRef.current) return;
+    const animate = () => {
+      let targetX = position.x;
+      let targetY = position.y;
 
-        let targetX = position.x;
-        let targetY = position.y;
+      if (isIdle) {
+        targetX = window.innerWidth / 2;
+        targetY = window.innerHeight / 2;
+      }
+      
+      const dx = targetX - auraPosition.x;
+      const dy = targetY - auraPosition.y;
 
-        if (isIdle) {
-            targetX = window.innerWidth / 2;
-            targetY = window.innerHeight / 2;
-        }
+      setAuraPosition({
+        x: auraPosition.x + dx * 0.1,
+        y: auraPosition.y + dy * 0.1
+      });
 
-        const dx = targetX - auraPosition.x;
-        const dy = targetY - auraPosition.y;
-
-        auraPosition.x += dx * 0.1;
-        auraPosition.y += dy * 0.1;
-
-        auraRef.current.style.transform = `translate(${auraPosition.x}px, ${auraPosition.y}px)`;
-
-        requestAnimationFrame(animateAura);
+      animationFrame.current = requestAnimationFrame(animate);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -76,27 +69,19 @@ export function OrbitalCursor() {
     document.documentElement.addEventListener('mouseleave', handleMouseLeave);
     
     resetIdleTimeout();
-    requestAnimationFrame(animateAura);
+    animationFrame.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.body.removeEventListener('mouseover', handleMouseOver);
       document.body.removeEventListener('mouseout', handleMouseOut);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
-      if (idleTimeout.current) {
-        clearTimeout(idleTimeout.current);
-      }
+      if (idleTimeout.current) clearTimeout(idleTimeout.current);
+      if (animationFrame.current) cancelAnimationFrame(animationFrame.current);
     };
-  }, [isVisible, isIdle, position.x, position.y, auraPosition]);
+  }, [position, auraPosition, isIdle, isVisible]);
 
-  const getDotPosition = () => {
-    if (isIdle) {
-      return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    }
-    return position;
-  };
-  
-  const dotPosition = getDotPosition();
+  const dotPos = isIdle ? auraPosition : position;
 
   return (
     <>
@@ -108,18 +93,22 @@ export function OrbitalCursor() {
           !isVisible && "hidden"
         )}
         style={{
-          transform: `translate(${dotPosition.x}px, ${dotPosition.y}px)`,
+          transform: `translate(${dotPos.x}px, ${dotPos.y}px)`,
         }}
       />
       <div
-        ref={auraRef}
         className={cn(
           "cursor-aura",
           isHovering && "hovering",
           isIdle && "idle",
           !isVisible && "hidden"
         )}
+        style={{
+          transform: `translate(${auraPosition.x}px, ${auraPosition.y}px)`,
+        }}
       />
     </>
   );
 }
+
+    
