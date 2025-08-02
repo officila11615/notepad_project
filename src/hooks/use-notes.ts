@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -13,7 +14,7 @@ export function useNotes() {
     try {
       const savedNotes = localStorage.getItem(STORAGE_KEY);
       if (savedNotes) {
-        setNotes(JSON.parse(savedNotes));
+        setNotes(JSON.parse(savedNotes).sort((a: Note, b: Note) => b.updatedAt - a.updatedAt));
       }
     } catch (error) {
       console.error("Failed to load notes from localStorage", error);
@@ -25,23 +26,24 @@ export function useNotes() {
   useEffect(() => {
     if (isLoaded) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+        const sortedNotes = [...notes].sort((a, b) => b.updatedAt - a.updatedAt);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sortedNotes));
       } catch (error) {
         console.error("Failed to save notes to localStorage", error);
       }
     }
   }, [notes, isLoaded]);
 
-  const addNote = useCallback(() => {
+  const addNote = useCallback((title: string, content: string) => {
     const timestamp = Date.now();
     const newNote: Note = {
       id: `note-${timestamp}`,
-      title: "New Note",
-      content: "",
+      title,
+      content,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
-    setNotes(prevNotes => [newNote, ...prevNotes]);
+    setNotes(prevNotes => [newNote, ...prevNotes].sort((a, b) => b.updatedAt - a.updatedAt));
     return newNote.id;
   }, []);
 
@@ -49,7 +51,7 @@ export function useNotes() {
     setNotes(prevNotes =>
       prevNotes.map(note =>
         note.id === id ? { ...note, title, content, updatedAt: Date.now() } : note
-      )
+      ).sort((a, b) => b.updatedAt - a.updatedAt)
     );
   }, []);
 

@@ -6,7 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
@@ -22,10 +25,27 @@ export default function NotesPage() {
   const [isSummarizing, startSummarizeTransition] = useTransition();
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const [isNewNoteDialogOpen, setIsNewNoteDialogOpen] = useState(false);
+  const [newNoteTitle, setNewNoteTitle] = useState('');
+  const [newNoteContent, setNewNoteContent] = useState('');
 
   const handleAddNote = () => {
-    const newNoteId = addNote();
-    router.push(`/notes/${newNoteId}`);
+    if (!newNoteTitle.trim() || !newNoteContent.trim()) {
+      toast({
+        variant: 'destructive',
+        title: "Cannot save note",
+        description: "Please fill in both title and content.",
+      });
+      return;
+    }
+    addNote(newNoteTitle, newNoteContent);
+    setNewNoteTitle('');
+    setNewNoteContent('');
+    setIsNewNoteDialogOpen(false);
+    toast({
+      title: "Note Created",
+      description: `"${newNoteTitle}" has been saved.`,
+    });
   };
 
   const handleDeleteNote = (e: React.MouseEvent, id: string, title: string) => {
@@ -33,17 +53,18 @@ export default function NotesPage() {
     deleteNote(id);
     toast({
       title: "Note Deleted",
-      description: `"${title}" has been moved to trash.`,
+      description: `"${title}" has been moved to the void.`,
     });
   };
 
   const handleSummarize = (e: React.MouseEvent, content: string) => {
     e.stopPropagation(); // prevent card click
     if (content.trim().length > 0) {
+      setSummary(null);
+      setIsSummaryDialogOpen(true);
       startSummarizeTransition(async () => {
         const result = await getSummary(content);
         setSummary(result);
-        setIsSummaryDialogOpen(true);
       });
     } else {
       toast({
@@ -53,9 +74,11 @@ export default function NotesPage() {
       });
     }
   };
+  
+  const isSaveDisabled = !newNoteTitle.trim() || !newNoteContent.trim();
 
   return (
-    <main className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
+    <main className="min-h-screen bg-transparent text-foreground p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <h1 className="text-4xl font-extrabold tracking-tight text-primary mb-4 sm:mb-0">
@@ -65,7 +88,7 @@ export default function NotesPage() {
              <Button asChild variant="outline">
                 <Link href="/">Back to Home</Link>
             </Button>
-            <Button onClick={handleAddNote} className="glow-sm hover:glow-md transition-all">
+            <Button onClick={() => setIsNewNoteDialogOpen(true)} className="glow-sm hover:glow-md transition-all">
               <FilePlus className="mr-2 h-4 w-4" />
               New Note
             </Button>
@@ -74,9 +97,9 @@ export default function NotesPage() {
 
         {isLoaded && notes.length === 0 ? (
           <div className="text-center py-20">
-            <h2 className="text-2xl font-semibold mb-2">No notes yet.</h2>
-            <p className="text-muted-foreground mb-4">Create your first note to get started.</p>
-            <Button onClick={handleAddNote} size="lg" className="glow-md hover:glow-lg transition-all">
+            <h2 className="text-2xl font-semibold mb-2">The void is empty.</h2>
+            <p className="text-muted-foreground mb-4">Create your first note to populate the cosmos.</p>
+            <Button onClick={() => setIsNewNoteDialogOpen(true)} size="lg" className="glow-md hover:glow-lg transition-all">
               Create a Note <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -146,19 +169,66 @@ export default function NotesPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-accent" /> AI Summary</DialogTitle>
             <DialogDescription>
-              Here's a summary of the note.
+              Here is a summary of the note's contents.
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] my-4">
-            {isSummarizing ? (
-              <div className="space-y-2 pr-4">
-                <Loader2 className="w-8 h-8 mx-auto my-4 text-primary/50 animate-spin" />
+            {isSummarizing && !summary ? (
+              <div className="space-y-2 pr-4 flex flex-col items-center">
+                <Loader2 className="w-8 h-8 my-4 text-primary/50 animate-spin" />
                 <p className="text-center text-muted-foreground">Generating summary...</p>
               </div>
             ) : (
               <p className="text-sm text-foreground whitespace-pre-wrap pr-4">{summary}</p>
             )}
           </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isNewNoteDialogOpen} onOpenChange={setIsNewNoteDialogOpen}>
+        <DialogContent className="sm:max-w-lg border-primary glow-sm">
+          <DialogHeader>
+            <DialogTitle>Create a New Note</DialogTitle>
+            <DialogDescription>
+              Fill in the details for your new note. Both fields are required.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="note-title" className="text-right">
+                Title
+              </Label>
+              <Input
+                id="note-title"
+                value={newNoteTitle}
+                onChange={(e) => setNewNoteTitle(e.target.value)}
+                className="col-span-3"
+                placeholder="My awesome note title"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="note-content" className="text-right pt-2">
+                Content
+              </Label>
+              <Textarea
+                id="note-content"
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
+                className="col-span-3 min-h-[120px]"
+                placeholder="Start writing your note here..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="button" onClick={handleAddNote} disabled={isSaveDisabled}>
+              Save Note
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </main>
