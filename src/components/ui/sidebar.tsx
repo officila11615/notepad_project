@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -656,6 +657,10 @@ const SidebarMenuSkeleton = React.forwardRef<
     // Random width between 50 to 90%.
     setWidth(`${Math.floor(Math.random() * 40) + 50}%`);
   }, []);
+
+  if (!width) {
+    return null;
+  }
 
   return (
     <div

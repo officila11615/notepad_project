@@ -4,14 +4,15 @@
 import { useNotes } from '@/hooks/use-notes';
 import { NoteEditor } from '@/components/note-editor';
 import { getSummary } from '@/app/actions';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-export default function NotePage({ params }: { params: { noteId: string } }) {
+export default function NotePage() {
   const { notes, updateNote, deleteNote, isLoaded } = useNotes();
   const router = useRouter();
-
-  const noteId = params.noteId;
-  const note = notes.find(n => n.id === noteId);
+  const params = useParams();
+  
+  const noteId = params.noteId as string;
+  const note = isLoaded ? notes.find(n => n.id === noteId) : undefined;
 
   const handleUpdateNote = (id: string, title: string, content: string) => {
     updateNote(id, title, content);
@@ -27,6 +28,7 @@ export default function NotePage({ params }: { params: { noteId: string } }) {
   };
   
   if (isLoaded && !note) {
+    // Redirect if the note doesn't exist after loading is complete
     router.replace('/notes');
     return null;
   }
