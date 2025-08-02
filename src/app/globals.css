@@ -89,7 +89,7 @@ body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: white; stop-opacity: 0.8" /><stop offset="70%" style="stop-color: white; stop-opacity: 0" /></radialGradient></defs><circle cx="32" cy="32" r="5" fill="none" stroke="hsl(10, 100%, 70%)" stroke-width="2" filter="url(%23blur)" /></svg>') 32 32, auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="5"/></filter><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color: hsl(10, 100%, 70%); stop-opacity: 0.8" /><stop offset="70%" style="stop-color: hsl(30, 100%, 60%); stop-opacity: 0.5" /><stop offset="90%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0.3" /><stop offset="100%" style="stop-color: hsl(180, 100%, 50%); stop-opacity: 0" /></radialGradient></defs><g filter="url(%23blur)"><ellipse cx="32" cy="32" rx="25" ry="17" fill="url(%23glow)"/></g></svg>') 32 32, auto;
   }
 
   button, a, [role="button"], .cursor-pointer {
