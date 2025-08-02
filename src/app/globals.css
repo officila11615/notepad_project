@@ -15,6 +15,7 @@ body {
     --popover: 220 40% 10%;
     --popover-foreground: 220 25% 95%;
     --primary: 260 100% 70%; /* Neon Purple */
+    --primary-rgb: 191, 128, 255;
     --primary-foreground: 260 85% 10%;
     --secondary: 220 40% 15%;
     --secondary-foreground: 220 25% 95%;
@@ -51,6 +52,7 @@ body {
     --popover: 220 40% 10%;
     --popover-foreground: 220 25% 95%;
     --primary: 260 100% 70%;
+    --primary-rgb: 191, 128, 255;
     --primary-foreground: 260 85% 10%;
     --secondary: 220 40% 15%;
     --secondary-foreground: 220 25% 95%;

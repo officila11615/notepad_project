@@ -54,13 +54,14 @@ export function CosmicBackground() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
       <div className={cn(
-          "absolute inset-0 bg-background transition-all duration-500",
-          isBackgroundGlowing && "bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.4),rgba(255,255,255,0))]"
+          "absolute inset-0 bg-background transition-opacity duration-1000",
+          isBackgroundGlowing ? "opacity-0" : "opacity-100"
         )}>
-        <div className={cn(
-          "absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] opacity-0 transition-opacity duration-500",
-          !isBackgroundGlowing && "opacity-100"
-        )}></div>
+      </div>
+      <div className={cn(
+          "absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--primary-rgb),0.3),rgba(var(--primary-rgb),0)_50%)] transition-opacity duration-1000",
+          isBackgroundGlowing ? "opacity-100" : "opacity-0"
+        )}>
       </div>
       
       {/* Stars */}
