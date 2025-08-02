@@ -98,87 +98,83 @@ body {
 }
 
 @layer utilities {
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-    20%, 40%, 60%, 80% { transform: translateX(2px); }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      opacity: 0.8;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.02);
-    }
-  }
-
-  @keyframes move-stars {
-    from { transform: translateY(0px) rotate(0deg); }
-    to { transform: translateY(-2000px) rotate(30deg); }
-  }
-  
-  @keyframes move-stars-2 {
-    from { transform: translateY(0px) rotate(0deg); }
-    to { transform: translateY(-2000px) rotate(60deg); }
+  @keyframes move-stars-bg {
+    from { background-position: 0 0; }
+    to { background-position: 0 1000px; }
   }
 
   @keyframes rotate-nebula {
-    from { transform: rotate(0deg) scale(1.5); }
-    to { transform: rotate(360deg) scale(1.5); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes twinkle-stars {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.2; }
   }
 }
 
 /* New Cosmic Background Styles */
-#stars, #stars2, #stars3 {
-  width: 100%;
-  height: 100%;
+.stars {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #eee, transparent),
+    radial-gradient(1px 1px at 40px 70px, #fff, transparent),
+    radial-gradient(1px 1px at 50px 160px, #ddd, transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(2px 2px at 130px 80px, #fff, transparent),
+    radial-gradient(2px 2px at 160px 120px, #ddd, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
   position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(calc(var(--mouse-x) * 0.01 * -1px), calc(var(--mouse-y) * 0.01 * -1px));
+  top: 0; left: 0; right: 0; bottom: 0;
+  animation: move-stars-bg 120s linear infinite;
+  transform: translate(var(--mouse-x-sm, 0px), var(--mouse-y-sm, 0px));
 }
 
-#stars {
-  background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="100" cy="100" r="1.2"></circle><circle fill="white" cx="500" cy="800" r="0.8"></circle><circle fill="white" cx="1200" cy="400" r="1.1"></circle><circle fill="white" cx="1800" cy="900" r="0.7"></circle><circle fill="white" cx="900" cy="1500" r="1.3"></circle><circle fill="white" cx="1500" cy="1800" r="0.9"></circle><circle fill="white" cx="300" cy="1200" r="0.8"></circle><circle fill="white" cx="1700" cy="200" r="1.0"></circle></svg>');
-  animation: move-stars 200s linear infinite;
-  opacity: 0.8;
-}
-
-#stars2 {
-  background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="250" cy="600" r="0.9"></circle><circle fill="white" cx="750" cy="200" r="0.6"></circle><circle fill="white" cx="1400" cy="1100" r="0.8"></circle><circle fill="white" cx="1900" cy="500" r="0.5"></circle><circle fill="white" cx="400" cy="1800" r="1.0"></circle><circle fill="white" cx="1100" cy="1300" r="0.7"></circle><circle fill="white" cx="1600" cy="100" r="0.6"></circle><circle fill="white" cx="100" cy="1900" r="0.9"></circle></svg>');
-  animation: move-stars-2 250s linear infinite;
-  opacity: 0.6;
-}
-
-#stars3 {
-   background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000"><circle fill="white" cx="450" cy="300" r="0.6"></circle><circle fill="white" cx="950" cy="1000" r="0.4"></circle><circle fill="white" cx="1600" cy="1400" r="0.5"></circle><circle fill="white" cx="100" cy="1000" r="0.3"></circle><circle fill="white" cx="800" cy="1900" r="0.7"></circle><circle fill="white" cx="1300" cy="500" r="0.5"></circle><circle fill="white" cx="1800" cy="1600" r="0.4"></circle><circle fill="white" cx="200" cy="100" r="0.6"></circle></svg>');
-  animation: move-stars 300s linear infinite;
-  opacity: 0.4;
-}
-
-#nebula {
-  width: 100%;
-  height: 100%;
+.stars-2 {
+  background-image:
+    radial-gradient(1px 1px at 10px 90px, #eee, transparent),
+    radial-gradient(2px 2px at 80px 30px, #fff, transparent),
+    radial-gradient(2px 2px at 100px 100px, #ddd, transparent),
+    radial-gradient(1px 1px at 120px 140px, #fff, transparent),
+    radial-gradient(2px 2px at 170px 180px, #fff, transparent),
+    radial-gradient(1px 1px at 190px 50px, #ddd, transparent);
+  background-repeat: repeat;
+  background-size: 250px 250px;
   position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0.3;
-  mix-blend-mode: screen;
-  transform: translate(calc(var(--mouse-x) * 0.02 * -1px), calc(var(--mouse-y) * 0.02 * -1px));
+  top: 0; left: 0; right: 0; bottom: 0;
+  animation: move-stars-bg 200s linear infinite;
+  transform: translate(var(--mouse-x-md, 0px), var(--mouse-y-md, 0px));
 }
 
-#nebula::after {
-  content: '';
+.stars-twinkle {
+  background-image:
+    radial-gradient(1px 1px at 50px 50px, #fff, transparent),
+    radial-gradient(1px 1px at 100px 200px, #fff, transparent),
+    radial-gradient(2px 2px at 200px 80px, #fff, transparent);
+  background-repeat: repeat;
+  background-size: 300px 300px;
   position: absolute;
-  inset: -100%;
-  background: radial-gradient(ellipse at 30% 20%, hsl(260 100% 70% / 0.5), transparent 50%),
-              radial-gradient(ellipse at 70% 80%, hsl(180 100% 50% / 0.5), transparent 50%),
-              radial-gradient(ellipse at 50% 50%, hsl(300 100% 70% / 0.3), transparent 60%);
-  animation: rotate-nebula 240s linear infinite;
+  top: 0; left: 0; right: 0; bottom: 0;
+  animation: twinkle-stars 15s alternate infinite, move-stars-bg 250s linear infinite;
+  transform: translate(var(--mouse-x-lg, 0px), var(--mouse-y-lg, 0px));
 }
+
+.nebula {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  right: -100px;
+  bottom: -100px;
+  background-image:
+    radial-gradient(ellipse 50% 40% at 20% 40%, hsl(260 100% 70% / 0.25), transparent),
+    radial-gradient(ellipse 50% 40% at 80% 60%, hsl(180 100% 50% / 0.25), transparent),
+    radial-gradient(ellipse 40% 30% at 50% 50%, hsl(300 100% 70% / 0.15), transparent);
+  mix-blend-mode: color-dodge;
+  animation: rotate-nebula 180s linear infinite;
+  transform: translate(var(--mouse-x-lg, 0px), var(--mouse-y-lg, 0px));
+}
+
 
 @layer components {
   .glow-sm {
