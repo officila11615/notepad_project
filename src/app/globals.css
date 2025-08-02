@@ -90,11 +90,11 @@ body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    cursor: url("data:image/svg+xml,%3Csvg width='96' height='96' viewBox='0 0 96 96' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='filter0_f_938_2314' x='0' y='0' width='96' height='96' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeBlend mode='normal' in='SourceGraphic' in2='BackgroundImageFix' result='shape'/%3E%3CfeGaussianBlur stdDeviation='16' result='effect1_foregroundBlur_938_2314'/%3E%3C/filter%3E%3Cstyle%3E.aura%7Banimation:pulse 4s ease-in-out infinite,shimmer 6s linear infinite;transform-origin:center center;%7D@keyframes pulse%7B0%25,100%25%7Btransform:scale(1);opacity:0.8;%7D50%25%7Btransform:scale(0.95);opacity:1;%7D%7D@keyframes shimmer%7B0%25,100%25%7Bfilter:brightness(1);%7D50%25%7Bfilter:brightness(1.2);%7D%7D%3C/style%3E%3C/defs%3E%3Cg class='aura'%3E%3Cg filter='url(%23filter0_f_938_2314)'%3E%3Cellipse cx='48' cy='48' rx='28' ry='14' fill='url(%23paint0_radial_938_2314)'/%3E%3C/g%3E%3C/g%3E%3Cdefs%3E%3CradialGradient id='paint0_radial_938_2314' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(48 48) rotate(90) scale(14 28)'%3E%3Cstop stop-color='%23C084FC'/%3E%3Cstop offset='0.7' stop-color='%232DD4BF'/%3E%3Cstop offset='1' stop-color='%230EA5E9' stop-opacity='0.5'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E") 48 48, auto;
+    cursor: none;
   }
 
   button, a, [role="button"], .cursor-pointer {
-    cursor: url("data:image/svg+xml,%3Csvg width='96' height='96' viewBox='0 0 96 96' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='filter0_f_938_2319' x='0' y='0' width='96' height='96' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeBlend mode='normal' in='SourceGraphic' in2='BackgroundImageFix' result='shape'/%3E%3CfeGaussianBlur stdDeviation='12' result='effect1_foregroundBlur_938_2319'/%3E%3C/filter%3E%3Cstyle%3E.aura%7Banimation:pulse_hover 2s ease-in-out infinite;transform-origin:center center;%7D@keyframes pulse_hover%7B0%25,100%25%7Btransform:scale(1);filter:brightness(1.2);%7D50%25%7Btransform:scale(1.1);filter:brightness(1.5);%7D%7D%3C/style%3E%3C/defs%3E%3Cg class='aura'%3E%3Cg filter='url(%23filter0_f_938_2319)'%3E%3Cellipse cx='48' cy='48' rx='32' ry='16' fill='url(%23paint0_radial_938_2319)'/%3E%3C/g%3E%3Cpath d='M48 40.5L50.5962 45.4038L55.5 48L50.5962 50.5962L48 55.5L45.4038 50.5962L40.5 48L45.4038 45.4038L48 40.5Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CradialGradient id='paint0_radial_938_2319' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(48 48) rotate(90) scale(16 32)'%3E%3Cstop stop-color='%23F472B6'/%3E%3Cstop offset='0.7' stop-color='%2367E8F9'/%3E%3Cstop offset='1' stop-color='%2338BDF8' stop-opacity='0.7'%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E") 48 48, pointer;
+    cursor: none;
   }
 }
 
@@ -112,6 +112,15 @@ body {
   @keyframes twinkle-stars {
     0%, 100% { opacity: 0.8; }
     50% { opacity: 0.2; }
+  }
+  
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(12px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(12px) rotate(-360deg);
+    }
   }
 }
 

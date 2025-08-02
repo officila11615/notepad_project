@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { CosmicBackground } from '@/components/cosmic-background';
 import { AppStateProvider } from '@/context/app-state-context';
-import { CursorAura } from '@/components/cursor-aura';
+import { OrbitalCursor } from '@/components/orbital-cursor';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
       </head>
       <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
         <AppStateProvider>
-          <CursorAura />
+          <OrbitalCursor />
           <CosmicBackground />
           <main className="relative z-10">{children}</main>
         </AppStateProvider>

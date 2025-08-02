@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
-export function CursorAura() {
+export function OrbitalCursor() {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -47,26 +47,32 @@ export function CursorAura() {
 
   return (
     <div
-      className={cn(
-        "pointer-events-none fixed -inset-40 z-50 transition-all duration-300",
-        isHovering ? "opacity-100" : "opacity-50"
-      )}
+      className="fixed inset-0 pointer-events-none z-50"
       style={{
-        background: `radial-gradient(600px at ${position.x}px ${position.y}px, hsla(260, 100%, 70%, 0.15), transparent 80%)`,
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        transition: 'transform 0.1s ease-out',
       }}
     >
       <div 
-         className={cn(
-            "absolute rounded-full transition-all duration-300",
-            isHovering ? "w-10 h-10 opacity-20" : "w-8 h-8 opacity-10"
-         )}
-         style={{
-            left: position.x - (isHovering ? 20 : 16),
-            top: position.y - (isHovering ? 20 : 16),
-            background: 'hsl(var(--primary))',
-            filter: 'blur(12px)',
-         }}
-      />
+        className={cn(
+            "absolute -left-3 -top-3 h-6 w-6 rounded-full border-2 transition-all duration-300",
+            isHovering ? 'scale-150 border-accent' : 'border-accent/70'
+        )}
+        style={{
+          boxShadow: `0 0 ${isHovering ? '12px' : '8px'} 0 hsl(var(--accent) / 0.8)`,
+        }}
+      >
+        <div 
+            className={cn(
+                "absolute -left-[5px] -top-[5px] h-[10px] w-[10px] rounded-full bg-accent transition-all duration-300",
+                 isHovering ? "scale-125" : "scale-100"
+            )} 
+            style={{
+                animation: 'orbit 4s linear infinite',
+                boxShadow: `0 0 6px 0 hsl(var(--accent))`,
+            }}
+        />
+      </div>
     </div>
   );
 }
