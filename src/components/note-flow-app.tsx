@@ -54,9 +54,15 @@ export function NoteFlowApp() {
   }, [notes, searchTerm]);
 
   const selectedNote = useMemo(() => {
-    if (!selectedNoteId) return null;
+    if (!selectedNoteId) {
+        if (notes && notes.length > 0 && isLoaded) {
+            setSelectedNoteId(filteredNotes[0].id)
+            return filteredNotes[0];
+        }
+        return null;
+    }
     return notes.find(note => note.id === selectedNoteId) || null;
-  }, [selectedNoteId, notes]);
+  }, [selectedNoteId, notes, isLoaded, filteredNotes]);
 
   return (
     <SidebarProvider>
@@ -92,7 +98,7 @@ export function NoteFlowApp() {
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <div className="h-full w-full bg-background/50 backdrop-blur-sm border-l border-border/50">
+        <div className="h-full w-full bg-card/50 backdrop-blur-sm border-l border-border/50">
           <NoteEditor
             note={selectedNote}
             onUpdate={handleUpdateNote}
