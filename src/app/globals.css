@@ -95,14 +95,6 @@ body {
 
   button, a, [role="button"], .cursor-pointer {
     cursor: none;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .hovering body a:hover,
-  .hovering body button:hover,
-  .hovering body [role="button"]:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 15px hsl(var(--accent) / 0.5), 0 0 30px hsl(var(--accent) / 0.3);
   }
 }
 
@@ -122,9 +114,9 @@ body {
     50% { opacity: 0.2; }
   }
 
-  @keyframes orbit {
-    0% { transform: rotate(0deg) translateX(22px) rotate(0deg) scale(1); }
-    100% { transform: rotate(360deg) translateX(22px) rotate(-360deg) scale(1); }
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 25px hsl(var(--primary) / 0.4), 0 0 45px hsl(var(--primary) / 0.2); }
+    50% { transform: scale(1.1); box-shadow: 0 0 35px hsl(var(--primary) / 0.6), 0 0 65px hsl(var(--primary) / 0.4); }
   }
 }
 
@@ -220,57 +212,52 @@ body {
   transition: opacity 0.2s ease-out;
 }
 
-.cursor-dot, .cursor-ring, .cursor-particle {
+.cursor-dot, .cursor-ring {
   position: absolute;
-  top: -16px;
-  left: -16px;
   border-radius: 50%;
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
   transform-origin: center center;
 }
 
 .cursor-dot {
-  width: 6px;
-  height: 6px;
-  background-color: hsl(var(--accent));
-  box-shadow: 0 0 5px hsl(var(--accent)), 0 0 10px hsl(var(--accent));
-  transform: translate(13px, 13px);
+  width: 44px;
+  height: 44px;
+  top: -22px;
+  left: -22px;
+  background-color: #fff;
+  box-shadow: 
+    0 0 5px #fff,
+    0 0 15px #fff,
+    0 0 25px hsl(var(--primary)),
+    0 0 40px hsl(var(--primary)),
+    0 0 60px hsl(var(--primary));
+  transition: transform 0.1s ease-out;
 }
 
 .cursor-ring {
-  width: 32px;
-  height: 32px;
-  border: 1px solid hsla(var(--accent), 0.5);
-  box-shadow: 0 0 15px hsla(var(--accent), 0.2), 0 0 30px hsla(var(--accent), 0.1);
-  transition: transform 0.3s ease-in-out;
+  width: 64px;
+  height: 64px;
+  top: -32px;
+  left: -32px;
+  border: 3px solid hsl(var(--accent) / 0.5);
+  box-shadow: 0 0 20px hsl(var(--accent) / 0.3), 0 0 40px hsl(var(--accent) / 0.2);
+  transition: all 0.3s ease-in-out;
 }
 
-.cursor-particle {
-  width: 4px;
-  height: 4px;
-  background-color: hsl(var(--primary));
-  box-shadow: 0 0 4px hsl(var(--primary)), 0 0 8px hsl(var(--primary));
-  transform: translate(14px, 14px);
-  animation-name: orbit;
-  animation-duration: 4s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-play-state: paused;
-}
 
-.cursor-container.moving .cursor-particle {
-  animation-play-state: running;
+.cursor-container.hovering .cursor-dot {
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 8px #fff,
+    0 0 20px #fff,
+    0 0 35px hsl(var(--primary)),
+    0 0 55px hsl(var(--primary)),
+    0 0 80px hsl(var(--primary));
 }
 
 .cursor-container.hovering .cursor-ring {
-  transform: scale(1.8);
+  animation: pulse-ring 1.5s infinite;
   border-color: hsl(var(--accent));
-  box-shadow: 0 0 20px hsl(var(--accent) / 0.5), 0 0 40px hsl(var(--accent) / 0.3);
-}
-
-.cursor-container.hovering .cursor-dot {
-  box-shadow: 0 0 15px hsl(var(--accent)), 0 0 30px hsl(var(--accent)), 0 0 45px hsl(var(--accent));
-  background-color: hsl(var(--accent));
 }
 
 .cursor-container.hidden {
