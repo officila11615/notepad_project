@@ -32,6 +32,10 @@ export function CosmicBackground() {
     };
   }, []);
 
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <div 
       id="cosmic-background-container"
