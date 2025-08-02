@@ -123,7 +123,7 @@ body {
 
   @keyframes pulse-glow {
     0%, 100% {
-      opacity: 0.7;
+      opacity: 0.8;
       transform: scale(1);
     }
     50% {
@@ -134,15 +134,15 @@ body {
 
   @keyframes corner-glow {
     0% {
-      transform: rotate(0deg);
+      transform: translate(-50%, -50%) rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
+      transform: translate(-50%, -50%) rotate(360deg);
     }
   }
   
   .animate-pulse-glow {
-    animation: pulse-glow 2s infinite;
+    animation: pulse-glow 2s infinite ease-in-out;
   }
 }
 
@@ -162,7 +162,9 @@ body {
   }
   
   .btn-primary-glow:hover {
-    @apply animate-pulse-glow;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 7px hsla(200, 100%, 50%, 0.7), /* Center blue glow */
+                inset 0 0 15px 3px hsla(200, 100%, 50%, 0.6);
   }
 
   .btn-primary-glow::before {
@@ -170,22 +172,20 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 200%;
-    padding-bottom: 200%;
+    width: 250%; /* Increased size for a wider aura */
+    padding-bottom: 250%;
     border-radius: 50%;
-    transform: translate(-50%, -50%);
     background: conic-gradient(
       from 0deg,
-      hsl(260 100% 70% / 0.8), 
-      hsl(300 100% 70% / 0.8),
-      hsl(180 100% 50% / 0.8),
-      hsl(210 100% 60% / 0.8),
-      hsl(260 100% 70% / 0.8)
+      hsla(0, 100%, 50%, 0.9), 
+      hsla(0, 95%, 55%, 0.8),
+      hsla(0, 100%, 50%, 0.9)
     );
     opacity: 0;
     transition: opacity 0.4s ease-in-out;
-    animation: corner-glow 4s linear infinite;
+    animation: corner-glow 3s linear infinite;
     z-index: 0;
+    filter: blur(15px); /* Add blur for a softer glow */
   }
   
   .btn-primary-glow:hover::before {
