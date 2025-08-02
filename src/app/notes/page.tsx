@@ -12,21 +12,17 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2, Image as ImageIcon, Video as VideoIcon, UploadCloud } from 'lucide-react';
-import { formatDate, cn } from '@/lib/utils';
+import { FilePlus, ArrowRight, Loader2, Image as ImageIcon, Video as VideoIcon, UploadCloud, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getSummary } from '@/app/actions';
 import { useAppState } from '@/context/app-state-context';
 
 export default function NotesPage() {
-  const { notes, addNote, deleteNote, isLoaded } = useNotes();
+  const { notes, addNote, isLoaded } = useNotes();
   const router = useRouter();
   const { toast } = useToast();
-  const [isSummarizing, startSummarizeTransition] = useTransition();
-  const [summary, setSummary] = useState<string | null>(null);
-  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [isNewNoteDialogOpen, setIsNewNoteDialogOpen] = useState(false);
   
   // New Note State
@@ -123,33 +119,6 @@ export default function NotesPage() {
     router.push(`/notes/${newNoteId}`);
   };
 
-  const handleDeleteNote = (e: React.MouseEvent, id: string, title: string) => {
-    e.stopPropagation(); // prevent card click
-    deleteNote(id);
-    toast({
-      title: "Note Deleted",
-      description: `"${title}" has been moved to the void.`,
-    });
-  };
-
-  const handleSummarize = (e: React.MouseEvent, content: string) => {
-    e.stopPropagation(); // prevent card click
-    if (content.trim().length > 0) {
-      setSummary(null);
-      setIsSummaryDialogOpen(true);
-      startSummarizeTransition(async () => {
-        const result = await getSummary(content);
-        setSummary(result);
-      });
-    } else {
-      toast({
-        variant: 'destructive',
-        title: "Cannot summarize",
-        description: "Note is empty.",
-      });
-    }
-  };
-  
   const isSaveDisabled = !newNoteTitle.trim();
 
   return (
@@ -184,78 +153,23 @@ export default function NotesPage() {
               <Card key={i} className="bg-card/80 border-border/50">
                 <CardHeader>
                   <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
                 </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3" />
-                </CardContent>
-                <CardFooter className="flex justify-end gap-2">
-                   <Skeleton className="h-8 w-8" />
-                   <Skeleton className="h-8 w-8" />
-                </CardFooter>
               </Card>
             ))}
             {notes.map(note => (
               <Card 
                 key={note.id} 
-                className="bg-card/80 hover:bg-card/100 border-border/50 hover:border-primary/50 transition-all cursor-pointer flex flex-col glow-sm hover:glow-md"
+                className="bg-card/80 hover:bg-card/100 border-border/50 hover:border-primary/50 transition-all cursor-pointer flex flex-col justify-center glow-sm hover:glow-md p-6"
                 onClick={() => router.push(`/notes/${note.id}`)}
               >
-                <CardHeader className="flex-grow">
-                  <CardTitle className="truncate">
-                    {note.title || 'Untitled Note'}
-                  </CardTitle>
-                  <CardDescription>Last updated: {formatDate(note.updatedAt)}</CardDescription>
-                </CardHeader>
-                <CardFooter className="flex justify-end items-center gap-2">
-                   <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-accent hover:text-accent hover:bg-accent/10"
-                      onClick={(e) => handleSummarize(e, note.content)}
-                      disabled={isSummarizing || !note.content.trim()}
-                      aria-label="Summarize note"
-                   >
-                     <Sparkles className="h-4 w-4" />
-                   </Button>
-                   <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={(e) => handleDeleteNote(e, note.id, note.title)}
-                    aria-label="Delete note"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </CardFooter>
+                <CardTitle className="truncate text-lg">
+                  {note.title || 'Untitled Note'}
+                </CardTitle>
               </Card>
             ))}
           </div>
         )}
       </div>
-
-       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
-        <DialogContent className="sm:max-w-md border-primary glow-sm">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-accent" /> AI Summary</DialogTitle>
-            <DialogDescription>
-              Here is a summary of the note's contents.
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh] my-4">
-            {isSummarizing && !summary ? (
-              <div className="space-y-2 pr-4 flex flex-col items-center">
-                <Loader2 className="w-8 h-8 my-4 text-primary/50 animate-spin" />
-                <p className="text-center text-muted-foreground">Generating summary...</p>
-              </div>
-            ) : (
-              <p className="text-sm text-foreground whitespace-pre-wrap pr-4">{summary}</p>
-            )}
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isNewNoteDialogOpen} onOpenChange={(isOpen) => {
           if (!isOpen) resetNewNoteFields();
