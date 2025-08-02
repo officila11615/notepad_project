@@ -9,14 +9,8 @@ interface Star {
   style: React.CSSProperties;
 }
 
-interface ShootingStar {
-  key: string;
-  style: React.CSSProperties;
-}
-
 export function CosmicBackground() {
   const [stars, setStars] = useState<Star[]>([]);
-  const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]);
 
   useEffect(() => {
     const generateStars = () => {
@@ -50,25 +44,7 @@ export function CosmicBackground() {
       setStars(newStars);
     };
 
-    const generateShootingStars = () => {
-        const newShootingStars: ShootingStar[] = [];
-        for (let i = 0; i < 5; i++) {
-            newShootingStars.push({
-                key: `shooting-star-${i}`,
-                style: {
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 10 + 5}s`,
-                    animationDuration: `${Math.random() * 2 + 1}s`,
-                    transform: `rotate(${Math.random() * 360}deg)`,
-                },
-            });
-        }
-        setShootingStars(newShootingStars);
-    };
-
     generateStars();
-    generateShootingStars();
   }, []);
 
 
@@ -87,53 +63,6 @@ export function CosmicBackground() {
             style={star.style}
           />
         ))}
-      </div>
-
-       {/* Shooting Stars */}
-       <div id="shooting-stars-container" className="absolute inset-0">
-        {shootingStars.map(star => (
-          <div
-            key={star.key}
-            className="absolute h-0.5 w-24 bg-gradient-to-r from-white to-transparent animate-shooting-star"
-            style={star.style}
-          />
-        ))}
-      </div>
-
-      {/* Planets and Orbits */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative w-px h-px">
-          {/* Planet 1 */}
-          <div className="absolute animate-planet-orbit-1">
-             <div className="relative w-20 h-20">
-               <div className="absolute inset-0 rounded-full bg-purple-500 opacity-50 blur-2xl"></div>
-               <div
-                className="absolute inset-2.5 rounded-full"
-                style={{ background: 'radial-gradient(circle at 30% 30%, hsl(260, 100%, 80%), hsl(260, 90%, 50%))' }}
-              ></div>
-             </div>
-          </div>
-          {/* Planet 2 */}
-          <div className="absolute animate-planet-orbit-2">
-            <div className="relative w-12 h-12">
-               <div className="absolute inset-0 rounded-full bg-cyan-400 opacity-50 blur-xl"></div>
-              <div
-                className="absolute inset-2 rounded-full"
-                style={{ background: 'radial-gradient(circle at 70% 70%, hsl(180, 100%, 70%), hsl(180, 90%, 40%))' }}
-              ></div>
-            </div>
-          </div>
-           {/* Planet 3 */}
-           <div className="absolute animate-planet-orbit-3">
-             <div className="relative w-16 h-16">
-               <div className="absolute inset-0 rounded-full bg-pink-500 opacity-50 blur-2xl"></div>
-               <div
-                 className="absolute inset-2 rounded-full"
-                 style={{ background: 'radial-gradient(circle at 20% 80%, hsl(300, 100%, 80%), hsl(300, 90%, 50%))' }}
-               ></div>
-             </div>
-           </div>
-        </div>
       </div>
     </div>
   );
