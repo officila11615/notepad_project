@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useTransition, useEffect, ChangeEvent } from 'react';
+import { useState, useTransition, useEffect, ChangeEvent, DragEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotes } from '@/hooks/use-notes';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { FilePlus, Trash2, ArrowRight, Sparkles, Loader2, Image as ImageIcon, Video as VideoIcon, UploadCloud } from 'lucide-react';
+import { formatDate, cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -34,6 +34,7 @@ export default function NotesPage() {
   const [newNoteContent, setNewNoteContent] = useState('');
   const [newNoteImage, setNewNoteImage] = useState<string | null>(null);
   const [newNoteVideo, setNewNoteVideo] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   
   const { setIsBackgroundGlowing } = useAppState();
 
@@ -46,28 +47,62 @@ export default function NotesPage() {
     setNewNoteContent('');
     setNewNoteImage(null);
     setNewNoteVideo(null);
+    setIsDragging(false);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>, fileType: 'image' | 'video') => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      if (fileType === 'image') setNewNoteImage(null);
-      if (fileType === 'video') setNewNoteVideo(null);
-      return;
-    }
-
+  const processFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
-      if (fileType === 'image') {
+      if (file.type.startsWith('image/')) {
         setNewNoteImage(dataUrl);
-      } else {
+      } else if (file.type.startsWith('video/')) {
         setNewNoteVideo(dataUrl);
       }
     };
     reader.readAsDataURL(file);
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDragEvents = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(true);
+  };
+  
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    handleDragEvents(e);
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      if (file.type.startsWith('image/jpeg') || file.type.startsWith('image/png')) {
+        processFile(file);
+      } else if (file.type.startsWith('video/mp4') || file.type.startsWith('video/webm')) {
+        processFile(file);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: "Invalid File Type",
+          description: "Please upload a JPG/PNG image or a MP4/WebM video.",
+        });
+      }
+    }
+  };
 
   const handleAddNote = () => {
     if (!newNoteTitle.trim() || !newNoteContent.trim()) {
@@ -235,11 +270,11 @@ export default function NotesPage() {
           if (!isOpen) resetNewNoteFields();
           setIsNewNoteDialogOpen(isOpen);
         }}>
-        <DialogContent className="sm:max-w-lg border-primary glow-sm">
+        <DialogContent className="sm:max-w-lg border-primary glow-sm" onDragEnter={handleDragEnter}>
           <DialogHeader>
             <DialogTitle>Create a New Note</DialogTitle>
             <DialogDescription>
-              Fill in the details for your new note. Media is optional.
+              Fill in the details for your new note. You can also drag and drop media.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -267,38 +302,62 @@ export default function NotesPage() {
                 placeholder="Start writing your note here..."
               />
             </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="note-image" className="text-right">
-                Image
-              </Label>
-              <Input
-                id="note-image"
-                type="file"
-                accept="image/jpeg,image/png"
-                onChange={(e) => handleFileChange(e, 'image')}
-                className="col-span-3"
-              />
-            </div>
-            {newNoteImage && (
-              <div className="col-start-2 col-span-3">
-                  <Image src={newNoteImage} alt="Image preview" width={100} height={100} className="rounded-md object-cover" />
+            
+            <div 
+              className={cn(
+                "col-span-4 rounded-lg border-2 border-dashed border-border p-6 text-center transition-colors duration-300",
+                isDragging && "border-primary glow-sm bg-primary/10"
+              )}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragEvents}
+              onDrop={handleDrop}
+            >
+              <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                <UploadCloud className="h-8 w-8" />
+                <p className="font-semibold">Drag & drop image or video</p>
+                <p className="text-xs">or click below to browse</p>
               </div>
-            )}
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="note-video" className="text-right">
-                Video
-              </Label>
-              <Input
-                id="note-video"
-                type="file"
-                accept="video/mp4,video/webm"
-                onChange={(e) => handleFileChange(e, 'video')}
-                className="col-span-3"
-              />
+              <div className="flex justify-center gap-4 mt-4">
+                 <Input
+                    id="note-image"
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <Button asChild variant="outline" size="sm">
+                    <Label htmlFor="note-image" className="cursor-pointer"><ImageIcon className="mr-2 h-4 w-4"/> Select Image</Label>
+                  </Button>
+
+                 <Input
+                    id="note-video"
+                    type="file"
+                    accept="video/mp4,video/webm"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <Button asChild variant="outline" size="sm">
+                    <Label htmlFor="note-video" className="cursor-pointer"><VideoIcon className="mr-2 h-4 w-4"/> Select Video</Label>
+                  </Button>
+              </div>
             </div>
-             {newNoteVideo && (
-              <div className="col-start-2 col-span-3">
-                  <video src={newNoteVideo} controls width="200" className="rounded-md" />
+            
+            {(newNoteImage || newNoteVideo) && (
+              <div className="col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {newNoteImage && (
+                  <div className="relative group">
+                    <p className="text-xs text-center mb-1 text-muted-foreground">Image Preview</p>
+                    <Image src={newNoteImage} alt="Image preview" width={200} height={200} className="rounded-md object-cover w-full" />
+                    <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => setNewNoteImage(null)}><Trash2 className="h-4 w-4"/></Button>
+                  </div>
+                )}
+                {newNoteVideo && (
+                  <div className="relative group">
+                    <p className="text-xs text-center mb-1 text-muted-foreground">Video Preview</p>
+                    <video src={newNoteVideo} controls className="rounded-md w-full" />
+                    <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => setNewNoteVideo(null)}><Trash2 className="h-4 w-4"/></Button>
+                  </div>
+                )}
               </div>
             )}
           </div>
