@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNotes } from '@/hooks/use-notes';
 import { NoteList } from './note-list';
 import { NoteEditor } from './note-editor';
@@ -23,15 +23,32 @@ export function NoteFlowApp() {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (isLoaded && notes.length === 0) {
+      const newNoteId = addNote();
+      setSelectedNoteId(newNoteId);
+    }
+  }, [isLoaded, notes, addNote]);
+
   const handleAddNote = () => {
     const newNoteId = addNote();
     setSelectedNoteId(newNoteId);
   };
 
   const handleDeleteNote = (id: string) => {
+    const index = notes.findIndex(n => n.id === id);
     deleteNote(id);
     if (selectedNoteId === id) {
-      setSelectedNoteId(notes.length > 1 ? notes.filter(n => n.id !== id)[0]?.id || null : null);
+      const newNotes = notes.filter(n => n.id !== id);
+      if (newNotes.length > 0) {
+        // select the previous note or the first one
+        setSelectedNoteId(newNotes[Math.max(0, index - 1)].id);
+      } else {
+        setSelectedNoteId(null);
+        // create a new one if all are deleted
+        const newNoteId = addNote();
+        setSelectedNoteId(newNoteId);
+      }
     }
   };
 
@@ -52,16 +69,13 @@ export function NoteFlowApp() {
       )
       .sort((a, b) => b.updatedAt - a.updatedAt);
   }, [notes, searchTerm]);
-
+  
   const selectedNote = useMemo(() => {
-    if (!selectedNoteId) {
-        if (notes && notes.length > 0 && isLoaded) {
-            setSelectedNoteId(filteredNotes[0].id)
-            return filteredNotes[0];
-        }
-        return null;
+    if (isLoaded && !selectedNoteId && filteredNotes.length > 0) {
+      setSelectedNoteId(filteredNotes[0].id);
+      return filteredNotes[0];
     }
-    return notes.find(note => note.id === selectedNoteId) || null;
+    return notes.find(note => note.id === selectedNoteId) ?? null;
   }, [selectedNoteId, notes, isLoaded, filteredNotes]);
 
   return (
