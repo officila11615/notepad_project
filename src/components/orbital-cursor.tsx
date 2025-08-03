@@ -15,7 +15,7 @@ export function OrbitalCursor() {
   const mousePos = useRef({ x: 0, y: 0 });
   const dotPos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
-  const trailPos = useRef(Array(TRAIL_LENGTH).fill({ x: 0, y: 0 }));
+  const trailPos = useRef(Array(TRAIL_LENGTH).fill(0).map(() => ({ x: 0, y: 0 })));
   
   const [isActive, setIsActive] = useState(false);
 
@@ -50,15 +50,16 @@ export function OrbitalCursor() {
 
     const animate = () => {
       // Animate Dot (comet head)
-      dotPos.current.x = mousePos.current.x;
-      dotPos.current.y = mousePos.current.y;
+      const { x, y } = mousePos.current;
+      dotPos.current.x = x;
+      dotPos.current.y = y;
        if (dotRef.current) {
         dotRef.current.style.transform = `translate(${dotPos.current.x}px, ${dotPos.current.y}px) translate(-50%, -50%)`;
       }
 
       // Animate Ring
-      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.19;
-      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.19;
+      ringPos.current.x += (x - ringPos.current.x) * 0.19;
+      ringPos.current.y += (y - ringPos.current.y) * 0.19;
       if (ringRef.current) {
         ringRef.current.style.transform = `translate(${ringPos.current.x}px, ${ringPos.current.y}px) translate(-50%, -50%)`;
       }
@@ -70,13 +71,12 @@ export function OrbitalCursor() {
         trailPos.current[i].x += (prevPos.x - trailPos.current[i].x) * 0.4;
         trailPos.current[i].y += (prevPos.y - trailPos.current[i].y) * 0.4;
         prevPos = currentTrailPos;
-      }
-      
-      trailRefs.current.forEach((ref, i) => {
+        
+        const ref = trailRefs.current[i];
         if(ref) {
           ref.style.transform = `translate(${trailPos.current[i].x}px, ${trailPos.current[i].y}px) translate(-50%, -50%)`;
         }
-      });
+      }
       
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -95,17 +95,20 @@ export function OrbitalCursor() {
 
   return (
     <>
-      <div ref={dotRef} className="comet-cursor-dot" />
-      <div ref={ringRef} className={cn("comet-cursor-ring", { active: isActive })} />
+      <div ref={dotRef} className="comet-cursor-dot" style={{ left: 0, top: 0, willChange: 'transform' }} />
+      <div ref={ringRef} className={cn("comet-cursor-ring", { active: isActive })} style={{ left: 0, top: 0, willChange: 'transform' }}/>
       {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
         <div
           key={i}
           ref={(el) => (trailRefs.current[i] = el)}
           className="comet-cursor-dot"
           style={{
+            left: 0,
+            top: 0,
             opacity: (1 - i / TRAIL_LENGTH).toFixed(2),
             transition: 'none',
-            animation: 'none'
+            animation: 'none',
+            willChange: 'transform'
           }}
         />
       ))}

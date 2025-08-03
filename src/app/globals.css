@@ -107,7 +107,6 @@
   top: 0;
   transform: translate(-50%, -50%);
   transition: background 0.14s, box-shadow 0.17s;
-  will-change: transform;
   mix-blend-mode: lighten;
 }
 
@@ -126,7 +125,6 @@
   box-shadow: 0 0 32px 0 #0efce94a;
   mix-blend-mode: lighten;
   opacity: 0.92;
-  will-change: transform;
 }
 
 .comet-cursor-ring.active {
