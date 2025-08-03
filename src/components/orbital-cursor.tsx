@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const TRAIL_LENGTH = 12;
 
@@ -15,6 +16,8 @@ export function OrbitalCursor() {
   const dotPos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
   const trailPos = useRef(Array(TRAIL_LENGTH).fill({ x: 0, y: 0 }));
+  
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -27,15 +30,15 @@ export function OrbitalCursor() {
       const target = e.target as Element;
       const selector = 'button, a, input, textarea, [role=button], [tabindex]:not([tabindex="-1"])';
       if (target.closest(selector)) {
-        ringRef.current?.classList.add('active');
+        setIsActive(true);
       }
     };
 
     const handleMouseOut = (e: MouseEvent) => {
       const target = e.target as Element;
-      const selector = 'button, a, input, textarea, [role=button], [tabindex]:not([tabindex="-1"])';
+       const selector = 'button, a, input, textarea, [role=button], [tabindex]:not([tabindex="-1"])';
        if (target.closest(selector)) {
-        ringRef.current?.classList.remove('active');
+        setIsActive(false);
       }
     };
 
@@ -46,7 +49,7 @@ export function OrbitalCursor() {
     let animationFrameId: number;
 
     const animate = () => {
-      // Animate Dot
+      // Animate Dot (comet head)
       dotPos.current.x = mousePos.current.x;
       dotPos.current.y = mousePos.current.y;
        if (dotRef.current) {
@@ -93,7 +96,7 @@ export function OrbitalCursor() {
   return (
     <>
       <div ref={dotRef} className="comet-cursor-dot" />
-      <div ref={ringRef} className="comet-cursor-ring" />
+      <div ref={ringRef} className={cn("comet-cursor-ring", { active: isActive })} />
       {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
         <div
           key={i}
@@ -101,6 +104,8 @@ export function OrbitalCursor() {
           className="comet-cursor-dot"
           style={{
             opacity: (1 - i / TRAIL_LENGTH).toFixed(2),
+            transition: 'none',
+            animation: 'none'
           }}
         />
       ))}
