@@ -8,27 +8,22 @@ export function OrbitalCursor() {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    // Prevent server-side execution
-    if (typeof window === 'undefined') {
-      return;
-    }
-
+    // Move cursor
     const move = (e: MouseEvent) => {
       if (cursorRef.current) {
         cursorRef.current.style.left = `${e.clientX}px`;
         cursorRef.current.style.top = `${e.clientY}px`;
       }
     };
-    
     const showActive = () => setActive(true);
     const hideActive = () => setActive(false);
 
     window.addEventListener('mousemove', move);
 
+    // Trigger aura over interactive elements
     const interactiveElements = document.querySelectorAll(
       'button, a, input, textarea, [role=button], [tabindex]:not([tabindex="-1"])'
     );
-
     interactiveElements.forEach((el) => {
       el.addEventListener('mouseenter', showActive);
       el.addEventListener('mouseleave', hideActive);
