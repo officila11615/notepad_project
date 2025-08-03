@@ -14,7 +14,7 @@ export function OrbitalCursor() {
   
   const mousePos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
-  const trailPos = useRef(Array(TRAIL_LENGTH).fill({ x: 0, y: 0 }));
+  const trailPos = useRef(Array(TRAIL_LENGTH).fill({ x: 0, y: 0 }).map(() => ({x: 0, y: 0})));
 
   useEffect(() => {
     setIsMounted(true);
@@ -39,13 +39,11 @@ export function OrbitalCursor() {
       }
       
       // Animate trail
-      let lastX = mousePos.current.x;
-      let lastY = mousePos.current.y;
-      
+      let lastPos = { ...mousePos.current };
       trailRefs.current.forEach((dot, index) => {
         if (dot) {
           const currentPos = trailPos.current[index];
-          const nextPos = index === 0 ? {x: lastX, y: lastY} : trailPos.current[index - 1];
+          const nextPos = index === 0 ? lastPos : trailPos.current[index - 1];
           currentPos.x += (nextPos.x - currentPos.x) * 0.4;
           currentPos.y += (nextPos.y - currentPos.y) * 0.4;
           dot.style.left = `${currentPos.x}px`;
@@ -56,34 +54,41 @@ export function OrbitalCursor() {
       animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    const showActive = () => ringRef.current?.classList.add('active');
-    const hideActive = () => ringRef.current?.classList.remove('active');
+    const selector = "a, button, input, textarea, .comet-chip, .comet-btn-social, [role=button]";
     
-    const interactiveElements = document.querySelectorAll(
-      'a, button, input, textarea, [role=button]'
-    );
+    const handleMouseOver = (e: MouseEvent) => {
+      if ((e.target as Element)?.closest(selector)) {
+        ringRef.current?.classList.add("active");
+      }
+    };
+    
+    const handleMouseOut = (e: MouseEvent) => {
+       if ((e.target as Element)?.closest(selector)) {
+        ringRef.current?.classList.remove("active");
+      }
+    };
       
     window.addEventListener('mousemove', handleMouseMove);
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', showActive);
-      el.addEventListener('mouseleave', hideActive);
-    });
+    document.addEventListener('mouseover', handleMouseOver);
+    document.addEventListener('mouseout', handleMouseOut);
     
     mousePos.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     ringPos.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    trailPos.current = Array(TRAIL_LENGTH).fill({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    trailPos.current.forEach(pos => {
+        pos.x = window.innerWidth / 2;
+        pos.y = window.innerHeight / 2;
+    });
 
     animate();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.removeEventListener('mouseout', handleMouseOut);
+
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', showActive);
-        el.removeEventListener('mouseleave', hideActive);
-      });
     };
   }, []);
   
