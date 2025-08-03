@@ -198,44 +198,19 @@ body {
   }
 }
 
-/* Comet Cursor Styles */
-.comet-cursor-dot {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #00ffe9 70%, #347cff 100%);
-  box-shadow: 0 0 16px #37fcffcc, 0 0 6px #00ffe944;
+/* New Centered Cursor Styles */
+.custom-cursor {
   position: fixed;
+  left: 0; 
+  top: 0;
+  width: 48px; 
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 40%, #7ae0ff 80%, #5243c0 100%);
+  transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 9999;
-  left: 0; /* Position is set by JS transform */
-  top: 0; /* Position is set by JS transform */
-  will-change: transform;
-  mix-blend-mode: lighten;
-}
-
-.comet-cursor-ring {
-  width: 36px;
-  height: 36px;
-  border: 2.5px solid #24fff3;
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9998;
-  left: 0; /* Position is set by JS transform */
-  top: 0; /* Position is set by JS transform */
-  transform: translate(-18px, -18px); /* Center the ring initially */
-  transition: border-color 0.2s, box-shadow 0.2s, width 0.13s, height 0.13s, transform 0.13s;
-  box-shadow: 0 0 32px 0 #0efce94a;
-  mix-blend-mode: lighten;
-  opacity: 0.92;
-}
-
-.comet-cursor-ring.active {
-  width: 62px;
-  height: 62px;
-  border-color: #fff;
-  box-shadow: 0 0 24px 6px #26ebffbb, 0 0 52px 0 #fff6;
-  opacity: 1;
-  transform: translate(-31px, -31px); /* Center the ring when active */
+  transition: background 0.13s, box-shadow 0.17s;
+  box-shadow: 0 0 18px 8px #8db0ff88, 0 0 36px #3420c580;
+  will-change: left, top;
 }
