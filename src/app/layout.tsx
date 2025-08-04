@@ -1,20 +1,3 @@
-
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { cn } from '@/lib/utils';
-import { Toaster } from '@/components/ui/toaster';
-import { CosmicBackground } from '@/components/cosmic-background';
-import { AppStateProvider } from '@/context/app-state-context';
-import { OrbitalCursor } from '@/components/orbital-cursor';
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-
-export const metadata: Metadata = {
-  title: 'NoteFlow',
-  description: 'A modern notepad app with AI-powered summarization.',
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,6 +6,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -41,5 +25,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    
